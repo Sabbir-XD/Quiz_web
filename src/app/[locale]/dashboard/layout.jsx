@@ -1,4 +1,4 @@
-import { CONFIG } from 'src/config-global';
+import { CONFIG_STATIC } from 'src/config-global';
 import { DashboardLayout } from 'src/layouts/dashboard';
 
 // import { AuthGuard } from 'src/auth/guard';
@@ -6,13 +6,14 @@ import { DashboardLayout } from 'src/layouts/dashboard';
 // ----------------------------------------------------------------------
 
 export default function Layout({ children }) {
-  if (CONFIG.auth.skip) {
+
+  if (CONFIG_STATIC.auth.skip) {
     return <DashboardLayout>{children}</DashboardLayout>;
   }
 
   return (
     // <AuthGuard>
-    <DashboardLayout>{children}</DashboardLayout>
-    // </AuthGuard>
+      <DashboardLayout>{children}</DashboardLayout>
+    //  </AuthGuard> 
   );
 }

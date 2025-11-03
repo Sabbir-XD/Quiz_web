@@ -1,10 +1,11 @@
-import { CONFIG } from 'src/config-global';
+
+import { CONFIG_STATIC } from 'src/config-global';
 
 import QuizModeSelection from 'src/components/Instruction/QuizModeSelection';
 
 // ----------------------------------------------------------------------
 
-export const metadata = { title: `Quiz-Mode - ${CONFIG.appName}` };
+export const metadata = { title: `Quiz-Mode - ${CONFIG_STATIC.appName}` };
 
 // ----------------------------------------------------------------------
 

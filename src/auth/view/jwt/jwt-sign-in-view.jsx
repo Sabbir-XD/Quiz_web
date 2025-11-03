@@ -42,11 +42,10 @@ export function JwtSignInView() {
   const password = useBoolean();
   const pathname = usePathname();
   const slice = pathname.split('/').slice(0, 2).join('/');
-  console.log(slice);
 
   const defaultValues = {
     email: 'dev.sabbir@gmail.com',
-    password: 'Sabbir@12',
+    password: 'Hello123',
   };
 
   const methods = useForm({

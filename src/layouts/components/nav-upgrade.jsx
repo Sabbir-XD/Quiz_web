@@ -7,9 +7,9 @@ import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import { alpha as hexAlpha } from '@mui/material/styles';
 
-import { paths } from 'src/routes/paths';
+import { usePaths } from 'src/routes/paths';
 
-import { CONFIG } from 'src/config-global';
+import { CONFIG_STATIC } from 'src/config-global';
 import { varAlpha, bgGradient } from 'src/theme/styles';
 
 import { Label } from 'src/components/label';
@@ -20,6 +20,7 @@ import { useMockedUser } from 'src/auth/hooks';
 
 export function NavUpgrade({ sx, ...other }) {
   const { user } = useMockedUser();
+  const paths = usePaths();
 
   return (
     <Stack sx={{ px: 2, py: 5, textAlign: 'center', ...sx }} {...other}>
@@ -79,7 +80,7 @@ export function UpgradeBlock({ sx, ...other }) {
       sx={{
         ...bgGradient({
           color: `135deg, ${hexAlpha('#F7BB95', 0.92)}, ${hexAlpha('#5B2FF3', 0.92)}`,
-          imgUrl: `${CONFIG.assetsDir}/assets/background/background-7.webp`,
+          imgUrl: `${CONFIG_STATIC.assetsDir}/assets/background/background-7.webp`,
         }),
         px: 3,
         py: 4,
@@ -111,7 +112,7 @@ export function UpgradeBlock({ sx, ...other }) {
           repeatDelay: 0,
         }}
         alt="Small Rocket"
-        src={`${CONFIG.assetsDir}/assets/illustrations/illustration-rocket-small.webp`}
+        src={`${CONFIG_STATIC.assetsDir}/assets/illustrations/illustration-rocket-small.webp`}
         sx={{ right: 0, width: 112, height: 112, position: 'absolute' }}
       />
 

@@ -1,9 +1,10 @@
-import { CONFIG } from 'src/config-global';
+
+import { CONFIG_STATIC } from 'src/config-global';
 
 import PricingSection from 'src/components/PricingSection/PricingSection';
 // ----------------------------------------------------------------------
 
-export const metadata = { title: `Pricing - ${CONFIG.appName}` };
+export const metadata = { title: `Pricing - ${CONFIG_STATIC.appName}` };
 
 // ----------------------------------------------------------------------
 export default async function PricingPage() {

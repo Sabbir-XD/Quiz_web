@@ -13,9 +13,8 @@ import IconButton from '@mui/material/IconButton';
 import LoadingButton from '@mui/lab/LoadingButton';
 import InputAdornment from '@mui/material/InputAdornment';
 
-import { paths } from 'src/routes/paths';
-import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
+import { useRouter, usePathname } from 'src/routes/hooks';
 
 import { useBoolean } from 'src/hooks/use-boolean';
 
@@ -28,7 +27,7 @@ import { FormHead } from '../../components/form-head';
 import { SignUpTerms } from '../../components/sign-up-terms';
 
 // ----------------------------------------------------------------------
-export const SignUpSchema = zod.object({
+export const   SignUpSchema = zod.object({
   firstName: zod.string().min(1, { message: 'First name is required!' }),
   lastName: zod.string().min(1, { message: 'Last name is required!' }),
   username: zod.string().min(1, { message: 'Username is required!' }),
@@ -48,6 +47,8 @@ export function JwtSignUpView() {
   const router = useRouter();
   const password = useBoolean();
   const [errorMsg, setErrorMsg] = useState('');
+  const pathname = usePathname();
+  const slice = pathname.split('/').slice(0, 2).join('/');
 
   /* const defaultValues = {
     firstName: 'Hello',
@@ -71,14 +72,19 @@ export function JwtSignUpView() {
         email: data.email,
         password: data.password,
         username: data.username,
-        // firstName: data.firstName,
-        // lastName: data.lastName,
+        firstName: data.firstName,
+        lastName: data.lastName,
       });
       await checkUserSession?.();
       router.refresh();
     } catch (error) {
-      console.error(error);
-      setErrorMsg(typeof error === 'string' ? error : error.message);
+      if (error.response) {
+        console.error('ব্যাকএন্ডের রেসপন্স:', error.response.data);
+        setErrorMsg(JSON.stringify(error.response.data));
+      } else {
+        console.error('এরর মেসেজ:', error.message);
+        setErrorMsg(error.message);
+      }
     }
   });
 
@@ -92,7 +98,7 @@ export function JwtSignUpView() {
         description={
           <>
             Already have an account?{' '}
-            <Link component={RouterLink} href={paths.auth.jwt.signIn} variant="subtitle2">
+            <Link component={RouterLink} href={`${slice}/auth/jwt/sign-in/`} variant="subtitle2">
               Sign in
             </Link>
           </>

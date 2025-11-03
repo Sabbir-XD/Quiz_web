@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 
 import { useRouter, useSearchParams } from 'src/routes/hooks';
 
-import { CONFIG } from 'src/config-global';
+import { CONFIG_STATIC } from 'src/config-global';
 
 import { SplashScreen } from 'src/components/loading-screen';
 
@@ -21,7 +21,7 @@ export function GuestGuard({ children }) {
 
   const [isChecking, setIsChecking] = useState(true);
 
-  const returnTo = searchParams.get('returnTo') || CONFIG.auth.redirectPath;
+  const returnTo = searchParams.get('returnTo') || CONFIG_STATIC.auth.redirectPath;
 
   const checkPermissions = async () => {
     if (loading) {

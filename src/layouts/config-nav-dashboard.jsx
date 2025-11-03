@@ -1,12 +1,16 @@
-import { paths } from 'src/routes/paths';
+'use client';
 
-import { CONFIG } from 'src/config-global';
+import { usePaths } from 'src/routes/paths';
+
+import { CONFIG_STATIC } from 'src/config-global';
 
 import { SvgColor } from 'src/components/svg-color';
 
 // ----------------------------------------------------------------------
 
-const icon = (name) => <SvgColor src={`${CONFIG.assetsDir}/assets/icons/navbar/${name}.svg`} />;
+const icon = (name) => (
+  <SvgColor src={`${CONFIG_STATIC.assetsDir}/assets/icons/navbar/${name}.svg`} />
+);
 
 const ICONS = {
   job: icon('ic-job'),
@@ -39,34 +43,34 @@ const ICONS = {
 
 // ----------------------------------------------------------------------
 
-export const navData = [
-  /**
-   * Overview
-   */
-  {
-    subheader: 'Overview 6.0.0',
-    items: [
-      { title: 'One', path: paths.dashboard.root, icon: ICONS.dashboard },
-      { title: 'Two', path: paths.dashboard.two, icon: ICONS.ecommerce },
-      { title: 'Three', path: paths.dashboard.three, icon: ICONS.analytics },
-    ],
-  },
-  /**
-   * Management
-   */
-  {
-    subheader: 'Management',
-    items: [
-      {
-        title: 'Group',
-        path: paths.dashboard.group.root,
-        icon: ICONS.user,
-        children: [
-          { title: 'Four', path: paths.dashboard.group.root },
-          { title: 'Five', path: paths.dashboard.group.five },
-          { title: 'Six', path: paths.dashboard.group.six },
-        ],
-      },
-    ],
-  },
-];
+export function useNavData() {
+  const paths = usePaths(); // get all route paths from your custom hook
+
+  // ----------------------------------------------------------------------
+
+  return [
+    {
+      subheader: 'Overview 6.0.0',
+      items: [
+        { title: 'Home', path: paths.dashboard.root, icon: ICONS.dashboard },
+        { title: 'Two', path: paths.dashboard.two, icon: ICONS.ecommerce },
+        { title: 'Three', path: paths.dashboard.three, icon: ICONS.analytics },
+      ],
+    },
+    {
+      subheader: 'Management',
+      items: [
+        {
+          title: 'Group',
+          path: paths.dashboard.group.root,
+          icon: ICONS.user,
+          children: [
+            { title: 'Four', path: paths.dashboard.group.root },
+            { title: 'Five', path: paths.dashboard.group.five },
+            { title: 'Six', path: paths.dashboard.group.six },
+          ],
+        },
+      ],
+    },
+  ];
+}

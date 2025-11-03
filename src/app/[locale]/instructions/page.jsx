@@ -1,10 +1,11 @@
-import { CONFIG } from 'src/config-global';
+
+import { CONFIG_STATIC } from 'src/config-global';
 
 import InstructionsPage from 'src/components/Instruction/InstructionsPage';
 
 // ----------------------------------------------------------------------
 
-export const metadata = { title: `Instructions - ${CONFIG.appName}` };
+export const metadata = { title: `Instructions - ${CONFIG_STATIC.appName}` };
 
 // ----------------------------------------------------------------------
 

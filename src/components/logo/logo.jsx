@@ -5,16 +5,19 @@ import { forwardRef } from 'react';
 
 import Box from '@mui/material/Box';
 
+import { CONFIG_STATIC } from 'src/config-global';
+
 import { logoClasses } from './classes';
-import { CONFIG } from '../../config-global';
 import { RouterLink } from '../../routes/components';
+
+
 
 // ----------------------------------------------------------------------
 
 export const Logo = forwardRef(
   ({ width, href = '/', height, disableLink = false, className, sx, ...other }, ref) => {
-    const logoSrc = `${CONFIG.assetsDir}/logo/logo-full.png`;
-    const logo02 = `${CONFIG.assetsDir}/logo/hello-logo.svg`;
+    const logoSrc = `${CONFIG_STATIC.assetsDir}/logo/logo-full.png`;
+    const logo02 = `${CONFIG_STATIC.assetsDir}/logo/hello-logo.svg`;
 
     return (
       <Box

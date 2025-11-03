@@ -4,10 +4,10 @@ import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 import Alert from '@mui/material/Alert';
 
-import { paths } from 'src/routes/paths';
+import { usePaths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
 
-import { CONFIG } from 'src/config-global';
+import { CONFIG_STATIC } from 'src/config-global';
 
 import { Logo } from 'src/components/logo';
 
@@ -17,9 +17,13 @@ import { HeaderSection } from '../core/header-section';
 import { LayoutSection } from '../core/layout-section';
 import { SettingsButton } from '../components/settings-button';
 
+
 // ----------------------------------------------------------------------
 
 export function AuthSplitLayout({ sx, section, children, header }) {
+
+   const paths = usePaths();
+
   const layoutQuery = 'md';
 
   return (
@@ -78,33 +82,33 @@ export function AuthSplitLayout({ sx, section, children, header }) {
           title={section?.title}
           layoutQuery={layoutQuery}
           imgUrl={section?.imgUrl}
-          method={CONFIG.auth.method}
+          method={CONFIG_STATIC.auth.method}
           subtitle={section?.subtitle}
           methods={[
             {
               label: 'Jwt',
               path: paths.auth.jwt.signIn,
-              icon: `${CONFIG.assetsDir}/assets/icons/platforms/ic-jwt.svg`,
+              icon: `${CONFIG_STATIC.assetsDir}/assets/icons/platforms/ic-jwt.svg`,
             },
             {
               label: 'Firebase',
               path: paths.auth.firebase.signIn,
-              icon: `${CONFIG.assetsDir}/assets/icons/platforms/ic-firebase.svg`,
+              icon: `${CONFIG_STATIC.assetsDir}/assets/icons/platforms/ic-firebase.svg`,
             },
             {
               label: 'Amplify',
               path: paths.auth.amplify.signIn,
-              icon: `${CONFIG.assetsDir}/assets/icons/platforms/ic-amplify.svg`,
+              icon: `${CONFIG_STATIC.assetsDir}/assets/icons/platforms/ic-amplify.svg`,
             },
             {
               label: 'Auth0',
               path: paths.auth.auth0.signIn,
-              icon: `${CONFIG.assetsDir}/assets/icons/platforms/ic-auth0.svg`,
+              icon: `${CONFIG_STATIC.assetsDir}/assets/icons/platforms/ic-auth0.svg`,
             },
             {
               label: 'Supabase',
               path: paths.auth.supabase.signIn,
-              icon: `${CONFIG.assetsDir}/assets/icons/platforms/ic-supabase.svg`,
+              icon: `${CONFIG_STATIC.assetsDir}/assets/icons/platforms/ic-supabase.svg`,
             },
           ]}
         />

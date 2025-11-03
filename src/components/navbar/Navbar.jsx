@@ -22,19 +22,21 @@ import {
   ListItemButton,
 } from '@mui/material';
 
+import { LanguagePopover } from 'src/layouts/components/language-popover';
+
 import { Logo } from '../logo';
 import { signOut } from '../../auth/context/jwt';
 import { useAuthContext } from '../../auth/hooks';
 import LocaleSwitcher from '../LocaleSwitcher/LocaleSwitcher';
 
-export default function AppNavbar() {
+export default function AppNavbar({ slice }) {
   const { user } = useAuthContext();
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const t = useTranslations('Navbar');
 
-
+  console.log("lang", slice);
   // Detect current locale from path, e.g. /en/dashboard => "en"
   const locale = pathname?.split('/')[1] || 'en';
 
@@ -45,7 +47,7 @@ export default function AppNavbar() {
     { title: t('pricing'), path: `/${locale}/pricing` },
     { title: t('terms'), path: `/${locale}/terms` },
     ...(
-      user ?
+      !user ?
         [{ title: t("dashboard"), path: `/${locale}/dashboard` }] : []),
   ];
 
@@ -208,6 +210,7 @@ export default function AppNavbar() {
 
             <Box ml={1}>
               <LocaleSwitcher />
+              <LanguagePopover />
             </Box>
 
             {user ? (

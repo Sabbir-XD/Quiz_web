@@ -1,7 +1,7 @@
 'use client';
 
 import { m } from 'framer-motion';
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 import MenuList from '@mui/material/MenuList';
 import MenuItem from '@mui/material/MenuItem';
@@ -11,12 +11,16 @@ import { varHover } from 'src/components/animate';
 import { FlagIcon } from 'src/components/iconify';
 import { usePopover, CustomPopover } from 'src/components/custom-popover';
 
-// ----------------------------------------------------------------------
-
 export function LanguagePopover({ data = [], sx, ...other }) {
   const popover = usePopover();
 
-  const [locale, setLocale] = useState(data[0].value);
+  const [locale, setLocale] = useState(data?.[0]?.value || 'en');
+
+  useEffect(() => {
+    if (data?.length && !locale) {
+      setLocale(data[0].value);
+    }
+  }, [data, locale]);
 
   const currentLang = data.find((lang) => lang.value === locale);
 
@@ -27,6 +31,8 @@ export function LanguagePopover({ data = [], sx, ...other }) {
     },
     [popover]
   );
+
+  if (!data?.length) return null;
 
   return (
     <>
@@ -50,7 +56,7 @@ export function LanguagePopover({ data = [], sx, ...other }) {
 
       <CustomPopover open={popover.open} anchorEl={popover.anchorEl} onClose={popover.onClose}>
         <MenuList sx={{ width: 160, minHeight: 72 }}>
-          {data?.map((option) => (
+          {data.map((option) => (
             <MenuItem
               key={option.value}
               selected={option.value === currentLang?.value}

@@ -1,6 +1,5 @@
 'use client';
 
-import Box from '@mui/material/Box';
 
 import { DashboardContent } from 'src/layouts/dashboard';
 
@@ -12,11 +11,6 @@ import { DashboardContent } from 'src/layouts/dashboard';
 
 export function BlankView() {
   return (
-    <DashboardContent maxWidth="xl">
-      <Box>
-        {/* <AppNavbar /> */}
-        {/* <HeroSlider /> */}
-      </Box>
-    </DashboardContent>
+    <DashboardContent maxWidth="xl" />
   );
 }

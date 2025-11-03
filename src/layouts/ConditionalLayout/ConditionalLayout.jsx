@@ -5,11 +5,14 @@ import { usePathname } from 'next/navigation';
 import Footer from '../../components/Footer/Footer';
 import AppNavbar from '../../components/navbar/Navbar';
 
+// import { useState } from 'react';
+
 
 export default function ConditionalLayout({ children }) {
+  // const [languages, setLanguages] = useState();
   const pathname = usePathname();
   const slice = pathname.split('/').slice(0, 2).join('/');
-
+  // setLanguages(slice);
   // console.log(slice);
 
 
@@ -24,7 +27,7 @@ export default function ConditionalLayout({ children }) {
 
   return (
     <>
-      {!shouldHideLayout && <AppNavbar />}
+      {!shouldHideLayout && <AppNavbar  slice={slice} />}
       {children}
       {!shouldHideLayout && <Footer />}
     </>

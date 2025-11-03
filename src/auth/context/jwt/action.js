@@ -1,16 +1,20 @@
 'use client';
 
 
+import { useEndpoints } from 'src/utils/useEndpoints';
+import { axiosInstance } from 'src/utils/axios-instance';
+
 import { setSession } from './utils';
 import { ACCESS_KEY, REFRESH_KEY } from './constant';
-import axiosInstance, { endpoints } from '../../../utils/axios';
 
 /** **************************************
  * Sign in
  *************************************** */
 export const signInWithPassword = async ({ email, password }) => {
+  //  const endpoints = useEndpoints();
+
   try {
-    const res = await axiosInstance.post(endpoints.auth.signIn, { email, password });
+    const res = await axiosInstance.post(useEndpoints.auth.signIn, { email, password });
 
     // Adjust according to backend response (access & refresh)
     const { access, refresh } = res.data;
@@ -47,7 +51,7 @@ export const signUp = async ({ email, password, firstName, lastName, username })
 
   try {
     // 1️⃣ Sign up the user
-    const res = await axiosInstance.post(endpoints.auth.signUp, params);
+    const res = await axiosInstance.post(useEndpoints.auth.signUp, params);
     console.log('✅ Signup response:', res.data);
 
     alert('🎉 User signed up & logged in successfully!');

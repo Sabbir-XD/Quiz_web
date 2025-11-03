@@ -1,9 +1,10 @@
-import { CONFIG } from 'src/config-global';
+
+import { CONFIG_STATIC } from 'src/config-global';
 
 import TermsContent from 'src/components/TermsContent/TermsContent';
 
 // ----------------------------------------------------------------------
-export const metadata = { title: `Terms & Conditions - ${CONFIG.appName}` };
+export const metadata = { title: `Terms & Conditions - ${CONFIG_STATIC.appName}` };
 
 // ----------------------------------------------------------------------
 

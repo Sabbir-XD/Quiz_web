@@ -14,7 +14,7 @@ export const Iconify = forwardRef(({ className, width = 20, sx, ...other }, ref)
   const baseStyles = {
     width,
     height: width,
-    flexShrink: 0,
+    flexShrink: 0, 
     display: 'inline-flex',
   };
 

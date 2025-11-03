@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography';
 
 import { RouterLink } from 'src/routes/components';
 
-import { CONFIG } from 'src/config-global';
+import { CONFIG_STATIC } from 'src/config-global';
 import { varAlpha, bgGradient } from 'src/theme/styles';
 
 import successAnimation from '../../../public/animation/Login.json';
@@ -36,7 +36,7 @@ export function Section({
             theme.vars.palette.background.defaultChannel,
             0.92
           )}, ${varAlpha(theme.vars.palette.background.defaultChannel, 0.92)}`,
-          imgUrl: `${CONFIG.assetsDir}/assets/background/background-3-blur.webp`,
+          imgUrl: `${CONFIG_STATIC.assetsDir}/assets/background/background-3-blur.webp`,
         }),
         px: 3,
         pb: 3,

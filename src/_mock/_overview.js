@@ -1,5 +1,6 @@
+import { CONFIG_STATIC } from 'src/config-global';
+
 import { _mock } from './_mock';
-import { CONFIG } from '../config-global';
 import { today } from '../utils/format-time';
 
 
@@ -19,7 +20,7 @@ export const _appRelated = [
   ratingNumber: _mock.number.rating(index),
   size: _mock.number.nativeL(index) * 1024,
   totalReviews: _mock.number.nativeL(index),
-  shortcut: `${CONFIG.assetsDir}/assets/icons/apps/ic-app-${index + 1}.webp`,
+  shortcut: `${CONFIG_STATIC.assetsDir}/assets/icons/apps/ic-app-${index + 1}.webp`,
   price: [2, 4].includes(index) ? _mock.number.price(index) : 0,
 }));
 

@@ -6,13 +6,28 @@ import useEmblaCarousel from 'embla-carousel-react';
 import { useRouter, usePathname } from 'next/navigation';
 
 import { Box, Button, Typography } from '@mui/material';
+// import axiosInstance from 'src/utils/axios';
+// import axios from 'axios';
 
 export default function HeroSlider({ params }) {
   const [emblaRef] = useEmblaCarousel({ loop: true, align: 'start' }, [Autoplay({ delay: 4000 })]);
   const pathname = usePathname();
   const router = useRouter();
+  // const [banners, setBanners] = useState();
+  // console.log(banners);
 
-  console.log(pathname);
+  // useEffect(() => {
+  //   axios
+  //     .get('http://192.168.88.245:8002/api/banners/')
+  //     .then((res) => {
+  //       setBanners(res.data);
+  //       console.log(res.data);
+  //     })
+  //     .catch((err) => {
+  //       console.error('Error fetching banners:', err);
+  //     });
+  // }, []);
+
 
   const slides = useMemo(() => [
     {
@@ -24,7 +39,7 @@ export default function HeroSlider({ params }) {
       subtitle_bangla: "ইন্টারেক্টিভ কুইজ যা সব বয়সের শিশুদের জন্য শিক্ষাকে উত্তেজনাপূর্ণ এবং আকর্ষক করে তোলে।",
       button_bangla: "মজা শেখা শুরু করুন",
       page: `${pathname}/instructions`,
-      image: "https://images.unsplash.com/photo-1577896851231-70ef18881754?w=1600",
+      image: "https://i.ibb.co.com/dsc5Vb7G/group-study.jpg?w=1600",
       is_active: true,
     },
     {
@@ -36,7 +51,7 @@ export default function HeroSlider({ params }) {
       subtitle_bangla: "রঙিন, অ্যানিমেটেড কুইজ যা শিশুদের বিনোদনের জন্য গুরুত্বপূর্ণ ধারণা শেখায়।",
       button_bangla: "কিডস জোন এক্সপ্লোর করুন",
       page: `${pathname}/instructions`,
-      image: "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=1600",
+      image: "https://i.ibb.co.com/LdSYR5Y8/Whats-App-Image-2025-11-01-at-3-54-27-PM.jpg?w=1600",
       is_active: true,
     },
     {
@@ -48,7 +63,7 @@ export default function HeroSlider({ params }) {
       subtitle_bangla: "সমালোচনামূলক চিন্তাভাবনা এবং জ্ঞান বিকাশের জন্য শিক্ষাবিদদের দ্বারা ডিজাইন করা বয়স-উপযুক্ত কুইজ।",
       button_bangla: "কোর্স দেখুন",
       page: `${pathname}/instructions`,
-      image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1600",
+      image: "https://i.ibb.co.com/NgGv8sLB/Build-atong-foundatiion.jpg",
       is_active: true,
     },
     {
@@ -60,10 +75,17 @@ export default function HeroSlider({ params }) {
       subtitle_bangla: "হাজার হাজার শিশুর সাথে যোগ দিন যারা মজা করার সময় গুরুত্বপূর্ণ দক্ষতা শিখছে।",
       button_bangla: "মজা শেখার যোগদান",
       page: `${pathname}/instructions`,
-      image: "https://images.unsplash.com/photo-1542810634-71277d95dcbb?w=1600",
+      image: "https://i.ibb.co.com/gMwKJt6N/smar-fun-learning.jpg",
       is_active: true,
     },
   ], [pathname]);
+
+// https://i.ibb.co.com/LdSYR5Y8/Whats-App-Image-2025-11-01-at-3-54-27-PM.jpg
+// https://i.ibb.co.com/NgGv8sLB/Build-atong-foundatiion.jpg
+// https://i.ibb.co.com/3YscG1Jn/Learning-for-quiz.jpg
+// https://i.ibb.co.com/wFg6H2VT/quiz-play.jpg
+// https://i.ibb.co.com/dsc5Vb7G/group-study.jpg
+
 
   const handleButtonClick = (pageUrl) => {
     router.push(pageUrl);

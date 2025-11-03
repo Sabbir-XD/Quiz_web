@@ -5,8 +5,8 @@ import { getRequestConfig, setRequestLocale } from 'next-intl/server';
 
 import InitColorSchemeScript from '@mui/material/InitColorSchemeScript';
 
-import { CONFIG } from 'src/config-global';
 import { primary } from 'src/theme/core/palette';
+import { CONFIG_STATIC } from 'src/config-global';
 import { schemeConfig } from 'src/theme/scheme-config';
 import { ThemeProvider } from 'src/theme/theme-provider';
 
@@ -31,12 +31,13 @@ export const metadata = {
   icons: [
     {
       rel: 'icon',
-      url: `${CONFIG.assetsDir}/favicon.ico`,
+      url: `${CONFIG_STATIC.assetsDir}/favicon.ico`,
     },
   ],
 };
 
 export default async function RootLayout({ children, params }) {
+
   // const locale = await params;
   const { locale } = await params;
 

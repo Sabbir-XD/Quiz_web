@@ -3,7 +3,7 @@ import { setRequestLocale } from 'next-intl/server';
 
 import { Box } from '@mui/material';
 
-import { CONFIG } from '../../config-global';
+import { CONFIG_STATIC } from '../../config-global';
 import HeroSlider from '../../sections/landing/hero/Hero';
 import QuizSection from '../../sections/landing/QuizSection/QuizSection';
 import OurQuizServices from '../../sections/landing/QuizCategories/QuizCategories';
@@ -12,7 +12,7 @@ import QuizConversionSection from '../../sections/landing/QuizConversionSection/
 
 // ----------------------------------------------------------------------
 
-export const metadata = { title: `HOME - ${CONFIG.appName}` };
+export const metadata = { title: `HOME - ${CONFIG_STATIC.appName}` };
 
 export default function Page({ params }) {
   const { locale } = params; // FIXED — no use()

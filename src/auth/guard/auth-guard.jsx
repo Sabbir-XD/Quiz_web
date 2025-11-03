@@ -16,13 +16,15 @@ import { useAuthContext } from '../hooks';
 export function AuthGuard({ children }) {
   const router = useRouter();
 
-  const pathname = usePathname();
-
   const searchParams = useSearchParams();
 
   const { authenticated, loading } = useAuthContext();
 
   const [isChecking, setIsChecking] = useState(true);
+
+  const pathname = usePathname();
+  const slice = pathname.split('/').slice(0, 2).join('');
+  console.log(slice);
 
   const createQueryString = useCallback(
     (name, value) => {
@@ -49,6 +51,8 @@ export function AuthGuard({ children }) {
         firebase: paths.auth.firebase.signIn,
         supabase: paths.auth.supabase.signIn,
       }[method];
+     
+      
 
       const href = `${signInPath}?${createQueryString('returnTo', pathname)}`;
 
