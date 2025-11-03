@@ -1,8 +1,6 @@
-
+import { axiosInstance } from 'src/utils/axios-instance';
 
 import { ACCESS_KEY } from './constant';
-import { paths } from '../../../routes/paths';
-import axiosInstance from '../../../utils/axios';
 
 // ----------------------------------------------------------------------
 
@@ -59,7 +57,14 @@ export function tokenExpired(exp) {
     try {
       alert('Token expired!');
       sessionStorage.removeItem(ACCESS_KEY);
-      window.location.href = paths.auth.jwt.signIn;
+
+      // Get locale from current pathname
+      const { pathname } = window.location;
+      console.log('utilits', pathname);
+      const locale = pathname.split('/')[1] || 'en';
+
+      // Redirect to sign in page with locale
+      window.location.href = `/${locale}/auth/jwt/sign-in`;
     } catch (error) {
       console.error('Error during token expiration:', error);
       throw error;
@@ -76,10 +81,10 @@ export async function setSession(accessToken) {
 
       axiosInstance.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
 
-      const decodedToken = jwtDecode(accessToken); // ~3 days by minimals server
+      const decodedToken = jwtDecode(accessToken);
 
       if (decodedToken && 'exp' in decodedToken) {
-        // tokenExpired(decodedToken.exp);
+        tokenExpired(decodedToken.exp);
       } else {
         throw new Error('Invalid access token!');
       }

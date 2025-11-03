@@ -1,11 +1,11 @@
 import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 
-import { CONFIG } from 'src/config-global';
 import { varAlpha } from 'src/theme/styles';
 
 import { SvgColor } from '../../svg-color';
 import { Block, BlockOption } from './styles';
+import { CONFIG_STATIC } from 'src/config-global';
 
 // ----------------------------------------------------------------------
 
@@ -190,7 +190,7 @@ export function ColorOption({ option, selected, sx, ...other }) {
       selected={selected}
       icon={
         <SvgColor
-          src={`${CONFIG.assetsDir}/assets/icons/settings/ic-sidebar-${
+          src={`${CONFIG_STATIC.assetsDir}/assets/icons/settings/ic-sidebar-${
             option === 'integrate' ? 'outline' : 'filled'
           }.svg`}
         />

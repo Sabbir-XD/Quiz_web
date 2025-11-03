@@ -2,6 +2,7 @@
 export const TIMER_DURATION = 30;
 export const TOTAL_QUESTIONS = 10;
 
+
 export const ALL_QUESTIONS = [
   { id: 1, question: 'What is 2 + 2?', options: ['3', '4', '5', '6'], correctAnswer: '4' },
   {

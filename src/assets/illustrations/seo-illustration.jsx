@@ -3,7 +3,7 @@ import { memo } from 'react';
 import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 
-import { CONFIG } from 'src/config-global';
+import { CONFIG_STATIC } from 'src/config-global';
 
 import { BackgroundShape } from './background-shape';
 
@@ -230,7 +230,7 @@ function SeoIllustration({ hideBackground, sx, ...other }) {
       </defs>
 
       <image
-        href={`${CONFIG.assetsDir}/assets/illustrations/characters/character-3.webp`}
+        href={`${CONFIG_STATIC.assetsDir}/assets/illustrations/characters/character-3.webp`}
         height="300"
         x="312"
         y="30"

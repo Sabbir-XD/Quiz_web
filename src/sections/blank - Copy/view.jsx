@@ -1,6 +1,5 @@
 'use client';
 
-
 import { DashboardContent } from 'src/layouts/dashboard';
 
 // import AppNavbar from 'src/components/navbar/Navbar';
@@ -10,7 +9,5 @@ import { DashboardContent } from 'src/layouts/dashboard';
 // ----------------------------------------------------------------------
 
 export function BlankView() {
-  return (
-    <DashboardContent maxWidth="xl" />
-  );
+  return <DashboardContent maxWidth="xl" />;
 }

@@ -1,10 +1,10 @@
-import { CONFIG } from 'src/config-global';
+import { CONFIG_STATIC } from 'src/config-global';
 
 import SingleQuizQuestion from 'src/components/QuizPage/SingleQuizQuestion';
 
 // ----------------------------------------------------------------------
 
-export const metadata = { title: `Single-Quiz-qus - ${CONFIG.appName}` };
+export const metadata = { title: `Single-Quiz-qus - ${CONFIG_STATIC.appName}` };
 
 // ----------------------------------------------------------------------
 
