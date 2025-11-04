@@ -7,6 +7,11 @@ export const CONFIG_STATIC = {
   assetsDir: process.env.NEXT_PUBLIC_ASSETS_DIR ?? '',
   isStaticExport: JSON.parse(`${process.env.BUILD_STATIC_EXPORT}`),
   mapboxApiKey: process.env.NEXT_PUBLIC_MAPBOX_API_KEY ?? '',
+  auth: {
+    method: 'jwt',
+    skip: false,
+    redirectPath: '/dashboard', // default path
+  },
   firebase: {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY ?? '',
     authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN ?? '',
@@ -29,10 +34,5 @@ export const CONFIG_STATIC = {
   supabase: {
     url: process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
     key: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? '',
-  },
-  auth: {
-    method: 'jwt',
-    skip: false,
-    redirectPath: '/dashboard', // default path
   },
 };

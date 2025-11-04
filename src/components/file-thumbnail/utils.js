@@ -1,4 +1,4 @@
-import { CONFIG } from 'src/config-global';
+import { CONFIG_STATIC } from 'src/config-global';
 
 // ----------------------------------------------------------------------
 
@@ -15,7 +15,7 @@ const FORMAT_AUDIO = ['wav', 'aif', 'mp3', 'aac'];
 const FORMAT_IMG = ['jpg', 'jpeg', 'gif', 'bmp', 'png', 'svg', 'webp'];
 const FORMAT_VIDEO = ['m4v', 'avi', 'mpg', 'mp4', 'webm'];
 
-const iconUrl = (icon) => `${CONFIG.assetsDir}/assets/icons/files/${icon}.svg`;
+const iconUrl = (icon) => `${CONFIG_STATIC.assetsDir}/assets/icons/files/${icon}.svg`;
 
 // ----------------------------------------------------------------------
 

@@ -36,19 +36,16 @@ export default function AppNavbar({ slice }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const t = useTranslations('Navbar');
 
-  console.log("lang", slice);
+  // console.log('lang', slice);
   // Detect current locale from path, e.g. /en/dashboard => "en"
   const locale = pathname?.split('/')[1] || 'en';
-
 
   // Dynamic links for current locale
   const navLinks = [
     { title: t('home'), path: `/${locale}` },
     { title: t('pricing'), path: `/${locale}/pricing` },
     { title: t('terms'), path: `/${locale}/terms` },
-    ...(
-      !user ?
-        [{ title: t("dashboard"), path: `/${locale}/dashboard` }] : []),
+    ...(!user ? [{ title: t('dashboard'), path: `/${locale}/dashboard` }] : []),
   ];
 
   // Proper active route check
@@ -91,7 +88,7 @@ export default function AppNavbar({ slice }) {
           href={`/${locale}`}
           style={{ display: 'flex', justifyContent: 'center', textDecoration: 'none' }}
         >
-          <Logo />
+          <Logo disableLink />
         </Link>
       </Box>
 
@@ -171,8 +168,11 @@ export default function AppNavbar({ slice }) {
       >
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
           {/* Logo */}
-          <Link href={`/${locale}`} style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-            <Logo />
+          <Link
+            href={`/${locale}`}
+            style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}
+          >
+            <Logo disableLink />
           </Link>
 
           {/* Desktop Menu */}
@@ -191,16 +191,16 @@ export default function AppNavbar({ slice }) {
                   '&:hover': { color: '#00A76F' },
                   '&::after': isActive(item.path)
                     ? {
-                      content: '""',
-                      position: 'absolute',
-                      bottom: 0,
-                      left: '50%',
-                      transform: 'translateX(-50%)',
-                      width: '60%',
-                      height: '3px',
-                      backgroundColor: '#00A76F',
-                      borderRadius: '2px',
-                    }
+                        content: '""',
+                        position: 'absolute',
+                        bottom: 0,
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        width: '60%',
+                        height: '3px',
+                        backgroundColor: '#00A76F',
+                        borderRadius: '2px',
+                      }
                     : {},
                 }}
               >

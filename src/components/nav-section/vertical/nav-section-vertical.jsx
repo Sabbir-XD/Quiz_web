@@ -4,22 +4,27 @@ import { useState, useCallback } from 'react';
 
 import Stack from '@mui/material/Stack';
 import Collapse from '@mui/material/Collapse';
+import { useTheme } from '@mui/material/styles';
 
 import { useNavData } from 'src/layouts/config-nav-dashboard';
 
 import { NavList } from './nav-list';
-import { NavLi, NavUl, Subheader } from '..';
-
+import { navSectionClasses } from '../classes';
+import { navSectionCssVars } from '../css-vars';
+import { NavLi, NavUl, Subheader } from '../styles';
 
 // ----------------------------------------------------------------------
 
 export function NavSectionVertical({ sx, ...other }) {
+  const theme = useTheme();
+  const cssVars = { ...navSectionCssVars.vertical(theme) };
+
   const data = useNavData(); // call the hook
 
   if (!data) return null; // safety check
 
   return (
-    <Stack component="nav" sx={{ ...sx }}>
+    <Stack component="nav" className={navSectionClasses.vertical.root} sx={{ ...cssVars, ...sx }}>
       <NavUl sx={{ flex: '1 1 auto', gap: 'var(--nav-item-gap)' }}>
         {data.map((group) => (
           <Group

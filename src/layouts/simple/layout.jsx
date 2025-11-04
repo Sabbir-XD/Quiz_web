@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 import Alert from '@mui/material/Alert';
 
-import { paths } from 'src/routes/paths';
+import { usePaths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
 
 import { Logo } from 'src/components/logo';
@@ -18,6 +18,7 @@ import { SettingsButton } from '../components/settings-button';
 
 export function SimpleLayout({ sx, children, header, content }) {
   const layoutQuery = 'md';
+  const paths = usePaths();
 
   return (
     <LayoutSection

@@ -2,7 +2,7 @@ import Box from '@mui/material/Box';
 import ButtonBase from '@mui/material/ButtonBase';
 import { alpha as hexAlpha } from '@mui/material/styles';
 
-import { CONFIG } from 'src/config-global';
+import { CONFIG_STATIC } from 'src/config-global';
 
 import { Block } from './styles';
 import { SvgColor } from '../../svg-color';
@@ -32,7 +32,7 @@ export function PresetsOptions({ value, options, onClickOption }) {
               >
                 <SvgColor
                   width={28}
-                  src={`${CONFIG.assetsDir}/assets/icons/settings/ic-siderbar-duotone.svg`}
+                  src={`${CONFIG_STATIC.assetsDir}/assets/icons/settings/ic-siderbar-duotone.svg`}
                   sx={{ color: 'currentColor' }}
                 />
               </ButtonBase>

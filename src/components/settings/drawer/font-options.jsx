@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box';
 
-import { CONFIG } from 'src/config-global';
+import { CONFIG_STATIC } from 'src/config-global';
 import { setFont } from 'src/theme/styles';
 
 import { SvgColor } from '../../svg-color';
@@ -23,7 +23,7 @@ export function FontOptions({ value, options, onClickOption }) {
                 icon={
                   <SvgColor
                     width={28}
-                    src={`${CONFIG.assetsDir}/assets/icons/settings/ic-font.svg`}
+                    src={`${CONFIG_STATIC.assetsDir}/assets/icons/settings/ic-font.svg`}
                     sx={{ color: 'currentColor' }}
                   />
                 }

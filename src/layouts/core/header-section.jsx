@@ -17,7 +17,7 @@ const StyledElevation = styled('span')(({ theme }) => ({
   right: 0,
   bottom: 0,
   m: 'auto',
-  height: 24,
+  height: 30,
   zIndex: -1,
   opacity: 0.48,
   borderRadius: '50%',

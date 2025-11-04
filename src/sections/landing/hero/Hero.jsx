@@ -1,11 +1,14 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Autoplay from 'embla-carousel-autoplay';
 import useEmblaCarousel from 'embla-carousel-react';
 import { useRouter, usePathname } from 'next/navigation';
 
 import { Box, Button, Typography } from '@mui/material';
+import { axiosInstance } from 'src/utils/axios-instance';
+
+import useFetch from 'src/api/api';
 // import axiosInstance from 'src/utils/axios';
 // import axios from 'axios';
 
@@ -13,12 +16,15 @@ export default function HeroSlider({ params }) {
   const [emblaRef] = useEmblaCarousel({ loop: true, align: 'start' }, [Autoplay({ delay: 4000 })]);
   const pathname = usePathname();
   const router = useRouter();
+  const { data: banners, error, isLoading, mutate } = useFetch('/api/banners/');
+  console.log(banners);
+  
   // const [banners, setBanners] = useState();
   // console.log(banners);
 
   // useEffect(() => {
-  //   axios
-  //     .get('http://192.168.88.245:8002/api/banners/')
+  //   axiosInstance
+  //     .get('/banners/')
   //     .then((res) => {
   //       setBanners(res.data);
   //       console.log(res.data);
@@ -28,64 +34,62 @@ export default function HeroSlider({ params }) {
   //     });
   // }, []);
 
+  // const slides = useMemo(() => [
+  //   {
+  //     id: 1,
+  //     title_english: "Fun Learning for Curious Minds",
+  //     subtitle_english: "Interactive quizzes that make education exciting and engaging for children of all ages.",
+  //     button_english: "Start Fun Learning",
+  //     title_bangla: "কৌতূহলী মনের জন্য মজার শিক্ষা",
+  //     subtitle_bangla: "ইন্টারেক্টিভ কুইজ যা সব বয়সের শিশুদের জন্য শিক্ষাকে উত্তেজনাপূর্ণ এবং আকর্ষক করে তোলে।",
+  //     button_bangla: "মজা শেখা শুরু করুন",
+  //     page: `${pathname}/instructions`,
+  //     image: "https://i.ibb.co.com/dsc5Vb7G/group-study.jpg?w=1600",
+  //     is_active: true,
+  //   },
+  //   {
+  //     id: 2,
+  //     title_english: "Learn Through Play & Quizzes",
+  //     subtitle_english: "Colorful, animated quizzes that teach important concepts while keeping children entertained.",
+  //     button_english: "Explore Kids Zone",
+  //     title_bangla: "প্লে এবং কুইজের মাধ্যমে শিখুন",
+  //     subtitle_bangla: "রঙিন, অ্যানিমেটেড কুইজ যা শিশুদের বিনোদনের জন্য গুরুত্বপূর্ণ ধারণা শেখায়।",
+  //     button_bangla: "কিডস জোন এক্সপ্লোর করুন",
+  //     page: `${pathname}/instructions`,
+  //     image: "https://i.ibb.co.com/LdSYR5Y8/Whats-App-Image-2025-11-01-at-3-54-27-PM.jpg?w=1600",
+  //     is_active: true,
+  //   },
+  //   {
+  //     id: 3,
+  //     title_english: "Build Strong Foundation",
+  //     subtitle_english: "Age-appropriate quizzes designed by educators to develop critical thinking and knowledge.",
+  //     button_english: "View Courses",
+  //     title_bangla: "শক্তিশালী ভিত্তি গড়ে তুলুন",
+  //     subtitle_bangla: "সমালোচনামূলক চিন্তাভাবনা এবং জ্ঞান বিকাশের জন্য শিক্ষাবিদদের দ্বারা ডিজাইন করা বয়স-উপযুক্ত কুইজ।",
+  //     button_bangla: "কোর্স দেখুন",
+  //     page: `${pathname}/instructions`,
+  //     image: "https://i.ibb.co.com/NgGv8sLB/Build-atong-foundatiion.jpg",
+  //     is_active: true,
+  //   },
+  //   {
+  //     id: 4,
+  //     title_english: "Grow Smarter, Have Fun!",
+  //     subtitle_english: "Join thousands of children who are learning important skills while having fun.",
+  //     button_english: "Join Fun Learning",
+  //     title_bangla: "স্মার্ট হয়ে উঠুন, মজা করুন!",
+  //     subtitle_bangla: "হাজার হাজার শিশুর সাথে যোগ দিন যারা মজা করার সময় গুরুত্বপূর্ণ দক্ষতা শিখছে।",
+  //     button_bangla: "মজা শেখার যোগদান",
+  //     page: `${pathname}/instructions`,
+  //     image: "https://i.ibb.co.com/gMwKJt6N/smar-fun-learning.jpg",
+  //     is_active: true,
+  //   },
+  // ], [pathname]);
 
-  const slides = useMemo(() => [
-    {
-      id: 1,
-      title_english: "Fun Learning for Curious Minds",
-      subtitle_english: "Interactive quizzes that make education exciting and engaging for children of all ages.",
-      button_english: "Start Fun Learning",
-      title_bangla: "কৌতূহলী মনের জন্য মজার শিক্ষা",
-      subtitle_bangla: "ইন্টারেক্টিভ কুইজ যা সব বয়সের শিশুদের জন্য শিক্ষাকে উত্তেজনাপূর্ণ এবং আকর্ষক করে তোলে।",
-      button_bangla: "মজা শেখা শুরু করুন",
-      page: `${pathname}/instructions`,
-      image: "https://i.ibb.co.com/dsc5Vb7G/group-study.jpg?w=1600",
-      is_active: true,
-    },
-    {
-      id: 2,
-      title_english: "Learn Through Play & Quizzes",
-      subtitle_english: "Colorful, animated quizzes that teach important concepts while keeping children entertained.",
-      button_english: "Explore Kids Zone",
-      title_bangla: "প্লে এবং কুইজের মাধ্যমে শিখুন",
-      subtitle_bangla: "রঙিন, অ্যানিমেটেড কুইজ যা শিশুদের বিনোদনের জন্য গুরুত্বপূর্ণ ধারণা শেখায়।",
-      button_bangla: "কিডস জোন এক্সপ্লোর করুন",
-      page: `${pathname}/instructions`,
-      image: "https://i.ibb.co.com/LdSYR5Y8/Whats-App-Image-2025-11-01-at-3-54-27-PM.jpg?w=1600",
-      is_active: true,
-    },
-    {
-      id: 3,
-      title_english: "Build Strong Foundation",
-      subtitle_english: "Age-appropriate quizzes designed by educators to develop critical thinking and knowledge.",
-      button_english: "View Courses",
-      title_bangla: "শক্তিশালী ভিত্তি গড়ে তুলুন",
-      subtitle_bangla: "সমালোচনামূলক চিন্তাভাবনা এবং জ্ঞান বিকাশের জন্য শিক্ষাবিদদের দ্বারা ডিজাইন করা বয়স-উপযুক্ত কুইজ।",
-      button_bangla: "কোর্স দেখুন",
-      page: `${pathname}/instructions`,
-      image: "https://i.ibb.co.com/NgGv8sLB/Build-atong-foundatiion.jpg",
-      is_active: true,
-    },
-    {
-      id: 4,
-      title_english: "Grow Smarter, Have Fun!",
-      subtitle_english: "Join thousands of children who are learning important skills while having fun.",
-      button_english: "Join Fun Learning",
-      title_bangla: "স্মার্ট হয়ে উঠুন, মজা করুন!",
-      subtitle_bangla: "হাজার হাজার শিশুর সাথে যোগ দিন যারা মজা করার সময় গুরুত্বপূর্ণ দক্ষতা শিখছে।",
-      button_bangla: "মজা শেখার যোগদান",
-      page: `${pathname}/instructions`,
-      image: "https://i.ibb.co.com/gMwKJt6N/smar-fun-learning.jpg",
-      is_active: true,
-    },
-  ], [pathname]);
-
-// https://i.ibb.co.com/LdSYR5Y8/Whats-App-Image-2025-11-01-at-3-54-27-PM.jpg
-// https://i.ibb.co.com/NgGv8sLB/Build-atong-foundatiion.jpg
-// https://i.ibb.co.com/3YscG1Jn/Learning-for-quiz.jpg
-// https://i.ibb.co.com/wFg6H2VT/quiz-play.jpg
-// https://i.ibb.co.com/dsc5Vb7G/group-study.jpg
-
+  // https://i.ibb.co.com/LdSYR5Y8/Whats-App-Image-2025-11-01-at-3-54-27-PM.jpg
+  // https://i.ibb.co.com/NgGv8sLB/Build-atong-foundatiion.jpg
+  // https://i.ibb.co.com/3YscG1Jn/Learning-for-quiz.jpg
+  // https://i.ibb.co.com/wFg6H2VT/quiz-play.jpg
+  // https://i.ibb.co.com/dsc5Vb7G/group-study.jpg
 
   const handleButtonClick = (pageUrl) => {
     router.push(pageUrl);
@@ -102,7 +106,7 @@ export default function HeroSlider({ params }) {
       }}
     >
       <Box sx={{ display: 'flex', height: '100%' }}>
-        {slides.map((slide) => (
+        {banners?.map((slide) => (
           <Box
             key={slide.id}
             sx={{
@@ -140,7 +144,7 @@ export default function HeroSlider({ params }) {
                   fontSize: { xs: '2rem', md: '3rem' },
                 }}
               >
-                {pathname === "/en/" ? slide.title_english : slide.title_bangla}
+                {pathname === '/en/' ? slide.title_english : slide.title_bangla}
               </Typography>
 
               <Typography
@@ -152,7 +156,7 @@ export default function HeroSlider({ params }) {
                   mb: 3,
                 }}
               >
-                {pathname === "/en/" ? slide.subtitle_english : slide.subtitle_bangla}
+                {pathname === '/en/' ? slide.subtitle_english : slide.subtitle_bangla}
               </Typography>
 
               <Button
@@ -175,7 +179,7 @@ export default function HeroSlider({ params }) {
                   transition: 'all 0.3s ease',
                 }}
               >
-                {pathname === "/en/" ? slide.button_english : slide.button_bangla}
+                {pathname === '/en/' ? slide.button_english : slide.button_bangla}
               </Button>
             </Box>
           </Box>

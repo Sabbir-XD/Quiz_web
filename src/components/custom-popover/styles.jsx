@@ -1,6 +1,6 @@
 import { styled } from '@mui/material/styles';
 
-import { CONFIG } from 'src/config-global';
+import { CONFIG_STATIC } from 'src/config-global';
 import { varAlpha, stylesMode } from 'src/theme/styles';
 
 // ----------------------------------------------------------------------
@@ -22,7 +22,7 @@ export const StyledArrow = styled('span', {
   const backgroundStyles = (color) => ({
     backgroundRepeat: 'no-repeat',
     backgroundSize: `${size * 3}px ${size * 3}px`,
-    backgroundImage: `url(${CONFIG.assetsDir}/assets/${color}-blur.png)`,
+    backgroundImage: `url(${CONFIG_STATIC.assetsDir}/assets/${color}-blur.png)`,
     ...(color === 'cyan' && {
       backgroundPosition: 'top right',
     }),

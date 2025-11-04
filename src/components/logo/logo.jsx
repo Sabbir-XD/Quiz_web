@@ -10,8 +10,6 @@ import { CONFIG_STATIC } from 'src/config-global';
 import { logoClasses } from './classes';
 import { RouterLink } from '../../routes/components';
 
-
-
 // ----------------------------------------------------------------------
 
 export const Logo = forwardRef(
