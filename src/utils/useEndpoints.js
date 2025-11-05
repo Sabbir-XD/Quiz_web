@@ -1,7 +1,8 @@
 'use client';
 
-import { CONFIG_STATIC } from 'src/config-global';
 import { usePaths } from 'src/routes/paths';
+
+import { CONFIG_STATIC } from 'src/config-global';
 
 export function useEndpoints() {
   const { locale } = usePaths();

@@ -1,9 +1,12 @@
 'use client';
 
 import React from 'react';
+
 import { usePaths } from 'src/routes/paths';
-import { SvgColor } from 'src/components/svg-color';
+
 import { CONFIG_STATIC } from 'src/config-global';
+
+import { SvgColor } from 'src/components/svg-color';
 
 // ----------------------------------------------------------------------
 

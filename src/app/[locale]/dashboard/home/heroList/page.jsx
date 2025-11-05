@@ -1,10 +1,19 @@
-import { CONFIG_STATIC } from 'src/config-global';
+'use client';
+
+import { useRouter } from 'next/navigation';
+
 import HeroList from 'src/layouts/dashboard/home/heroManager/HeroList';
 
-// ----------------------------------------------------------------------
-
-export const metadata = { title: `Hero page | Dashboard - ${CONFIG_STATIC.appName}` };
-
 export default function Page() {
-  return <HeroList />;
+  const router = useRouter();
+
+  const handleEdit = (banner) => {
+    router.push(`/en/dashboard/home?edit=${banner.id}`);
+  };
+
+  const handleCreate = () => {
+    router.push('/en/dashboard/home');
+  };
+
+  return <HeroList onCreate={handleCreate} onEdit={handleEdit} />;
 }

@@ -3,8 +3,8 @@ import Switch from '@mui/material/Switch';
 import Tooltip from '@mui/material/Tooltip';
 import ButtonBase from '@mui/material/ButtonBase';
 
-import { CONFIG_STATIC } from 'src/config-global';
 import { varAlpha } from 'src/theme/styles';
+import { CONFIG_STATIC } from 'src/config-global';
 
 import { Iconify } from 'src/components/iconify';
 

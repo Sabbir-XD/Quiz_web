@@ -2,10 +2,10 @@
 
 import { useState, useEffect, useCallback } from 'react';
 
-import { paths } from 'src/routes/paths';
+import { usePaths } from 'src/routes/paths';
 import { useRouter, usePathname, useSearchParams } from 'src/routes/hooks';
 
-import { CONFIG } from 'src/config-global';
+import { CONFIG_STATIC } from 'src/config-global';
 
 import { SplashScreen } from 'src/components/loading-screen';
 
@@ -14,6 +14,7 @@ import { useAuthContext } from '../hooks';
 // ----------------------------------------------------------------------
 
 export function AuthGuard({ children }) {
+  const paths = usePaths();
   const router = useRouter();
 
   const searchParams = useSearchParams();
@@ -42,7 +43,7 @@ export function AuthGuard({ children }) {
     }
 
     if (!authenticated) {
-      const { method } = CONFIG.auth;
+      const { method } = CONFIG_STATIC.auth;
 
       const signInPath = {
         jwt: paths.auth.jwt.signIn,

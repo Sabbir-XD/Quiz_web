@@ -1,5 +1,6 @@
 import 'src/global.css';
 
+import { Toaster } from 'sonner';
 import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { getRequestConfig, setRequestLocale } from 'next-intl/server';
 
@@ -18,7 +19,6 @@ import { AuthProvider } from 'src/auth/context/jwt';
 
 import { routing } from '../i18n/routing';
 import ConditionalLayout from '../layouts/ConditionalLayout/ConditionalLayout';
-import { Toaster } from 'sonner';
 // import { notFound } from 'next/navigation';
 
 export const viewport = {

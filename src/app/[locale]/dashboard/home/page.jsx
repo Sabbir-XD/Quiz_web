@@ -1,18 +1,35 @@
 'use client';
 
+import { useSearchParams } from 'next/navigation';
+
 import { useEndpoints } from 'src/utils/useEndpoints';
 
 import useApi from 'src/api/api';
 import HeroManagement from 'src/layouts/dashboard/home/heroManager/heroManager';
 
-// We need to move metadata to a separate layout file since it can't be in a client component
-// Create a new file named layout.jsx in the same directory with this content:
-// export const metadata = { title: `Hero page | Dashboard - ${CONFIG_STATIC.appName}` };
-
 export default function Page() {
   const { banners: bannerUrl } = useEndpoints();
+  const searchParams = useSearchParams();
+  const editId = searchParams.get('edit');
 
-  const { data: Banners } = useApi(bannerUrl, { fetch: true });
+  // Get all banners
+  const { data: allBanners, isLoading } = useApi(bannerUrl, { fetch: true });
 
-  return <HeroManagement banner={Banners} />;
+  // If we're in edit mode, find the specific banner
+  const selectedBanner =
+    editId && allBanners ? allBanners.find((banner) => String(banner.id) === String(editId)) : null;
+
+  // Show loading state while data is being fetched
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  // If we're trying to edit a banner that doesn't exist
+  if (editId && !selectedBanner && !isLoading) {
+    return <div>Banner not found</div>;
+  }
+
+  // For editing: pass the selected banner
+  // For creating: pass null
+  return <HeroManagement Banners={editId ? selectedBanner : null} />;
 }

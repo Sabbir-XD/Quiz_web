@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect } from 'react';
-
-import { Box, Button, Typography } from '@mui/material';
 import Autoplay from 'embla-carousel-autoplay';
 import useEmblaCarousel from 'embla-carousel-react';
 import { useRouter, usePathname } from 'next/navigation';
+
+import { Box, Button, Typography } from '@mui/material';
 
 import { useEndpoints } from 'src/utils/useEndpoints';
 

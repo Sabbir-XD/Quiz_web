@@ -1,25 +1,15 @@
 'use client';
 
-import { useEffect } from 'react';
-import {
-  Box,
-  Button,
-  Card,
-  CardMedia,
-  Typography,
-  Stack,
-  IconButton,
-  CircularProgress,
-  Dialog,
-  DialogTitle,
-  DialogActions,
-} from '@mui/material';
-
-import { Icon } from '@iconify/react';
 import { toast } from 'sonner';
+import { useEffect } from 'react';
+import { Icon } from '@iconify/react';
+import { useRouter, usePathname } from 'next/navigation';
+
+import { Box, Card, Stack, Button, CardMedia, Typography, IconButton } from '@mui/material';
+
 import { useEndpoints } from 'src/utils/useEndpoints';
+
 import useApi from 'src/api/api';
-import { usePathname, useRouter } from 'next/navigation';
 import Loading from 'src/app/loading';
 
 export default function HeroList({ onCreate, onEdit }) {
@@ -36,7 +26,8 @@ export default function HeroList({ onCreate, onEdit }) {
   }, [pathname, mutate]);
 
   const handleDelete = async (id) => {
-    if (!confirm('Are you sure you want to delete this banner?')) return;
+    // use `window.confirm` to avoid ESLint "no-restricted-globals" and be explicit
+    if (!window.confirm('Are you sure you want to delete this banner?')) return;
 
     try {
       await deleteData(`/${id}`);
@@ -48,8 +39,16 @@ export default function HeroList({ onCreate, onEdit }) {
   };
 
   const handleAddNew = () => {
-    router.push(`/${locale}/dashboard/home`); // navigate to route
+    router.push(`/${locale}/dashboard/home`);
     onCreate?.();
+  };
+
+  const handleEdit = (banner) => {
+    // Ensure the ID is properly converted to string
+    const editId = String(banner.id);
+    // Navigate to home page with the banner data in the URL
+    router.push(`/${locale}/dashboard/home?edit=${editId}`);
+    console.log('Editing banner:', banner); // Debug log
   };
 
   if (isLoading) return <Loading />;
@@ -74,7 +73,7 @@ export default function HeroList({ onCreate, onEdit }) {
             px: 2.5,
           }}
         >
-         Add New
+          Add New
         </Button>
       </Stack>
 
@@ -125,7 +124,7 @@ export default function HeroList({ onCreate, onEdit }) {
             <Stack direction="row" spacing={1}>
               <IconButton
                 color="primary"
-                onClick={() => onEdit(banner)}
+                onClick={() => handleEdit(banner)}
                 sx={{
                   bgcolor: 'rgba(25,118,210,0.08)',
                   '&:hover': { bgcolor: 'rgba(25,118,210,0.15)' },

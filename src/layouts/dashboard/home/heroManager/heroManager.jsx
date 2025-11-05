@@ -1,23 +1,30 @@
 'use client';
 
+import { toast } from 'sonner';
+import PropTypes from 'prop-types';
+// third party
+import { Icon } from '@iconify/react';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useForm, Controller } from 'react-hook-form';
+
+// mui
+import { styled } from '@mui/material/styles';
 import {
   Box,
-  Button,
-  TextField,
-  Typography,
   Paper,
   Stack,
+  Button,
+  TextField,
   IconButton,
+  Typography,
   CircularProgress,
 } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import { Icon } from '@iconify/react';
+
+// utils
 import { useEndpoints } from 'src/utils/useEndpoints';
+
 import useApi from 'src/api/api';
-import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -31,7 +38,18 @@ const VisuallyHiddenInput = styled('input')({
   width: 1,
 });
 
-export default function HeroManagement({ Banners = null }) {
+HeroManagement.propTypes = {
+  Banners: PropTypes.shape({
+    id: PropTypes.string,
+    title_english: PropTypes.string,
+    subtitle_english: PropTypes.string,
+    button_english: PropTypes.string,
+    page: PropTypes.string,
+    image: PropTypes.string,
+  }),
+};
+
+export default function HeroManagement({ Banners }) {
   const {
     handleSubmit,
     control,
@@ -55,18 +73,18 @@ export default function HeroManagement({ Banners = null }) {
   const { postData, patchData, putData } = useApi(bannerUrl, { fetch: false });
   const router = useRouter();
 
-  // ✅ Populate form if editing an existing banner
+  // Populate form if editing an existing banner
   useEffect(() => {
-    if (banner) {
+    if (Banners) {
       reset({
-        title_english: banner.title_english || '',
-        subtitle_english: banner.subtitle_english || '',
-        button_english: banner.button_english || '',
-        page: banner.page || '',
+        title_english: Banners.title_english || '',
+        subtitle_english: Banners.subtitle_english || '',
+        button_english: Banners.button_english || '',
+        page: Banners.page || '',
       });
-      setImagePreview(banner.image || null);
+      setImagePreview(Banners.image || null);
     }
-  }, [banner, reset]);
+  }, [Banners, reset]);
 
   const onSubmit = async (data) => {
     if (!imageFile && !imagePreview) {
@@ -84,9 +102,11 @@ export default function HeroManagement({ Banners = null }) {
       formDataToSend.append('page', data.page || '');
       if (imageFile) formDataToSend.append('image', imageFile);
 
-      // ✅ Decide between POST or PATCH
-      if (banner) {
-        await patchData(`/${banner.id}`, formDataToSend);
+       
+
+      // Decide between POST or PATCH
+      if (Banners) {
+        await patchData(`/${Banners.id}`, formDataToSend);
         toast.success('Banner updated successfully!');
       } else {
         await putData('', formDataToSend);
@@ -135,7 +155,7 @@ export default function HeroManagement({ Banners = null }) {
           <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ p: 4 }}>
             <Stack spacing={3}>
               <Typography variant="h6" fontWeight={700}>
-                {banner ? 'Edit Hero Banner' : 'Create New Hero Banner'}
+                {Banners ? 'Edit Hero Banner' : 'Create New Hero Banner'}
               </Typography>
 
               {/* Title */}
@@ -211,9 +231,13 @@ export default function HeroManagement({ Banners = null }) {
                 </Typography>
 
                 {!imagePreview ? (
-                  <label style={{ cursor: 'pointer' }}>
+                  <>
                     <Box
+                      component="label"
+                      htmlFor="hero-image-upload"
                       sx={{
+                        display: 'block',
+                        cursor: 'pointer',
                         border: '2px dashed #00A76F',
                         borderRadius: 3,
                         py: 6,
@@ -229,11 +253,12 @@ export default function HeroManagement({ Banners = null }) {
                       </Typography>
                     </Box>
                     <VisuallyHiddenInput
+                      id="hero-image-upload"
                       type="file"
                       accept="image/*"
                       onChange={handleImageChange}
                     />
-                  </label>
+                  </>
                 ) : (
                   <Box sx={{ position: 'relative', borderRadius: 3, overflow: 'hidden' }}>
                     <Box
@@ -287,7 +312,7 @@ export default function HeroManagement({ Banners = null }) {
                 ) : (
                   <Icon icon="mdi:send" width={20} height={20} />
                 )}
-                {isSubmitting ? 'Saving...' : banner ? 'Update Hero Section' : 'Save Hero Section'}
+                {isSubmitting ? 'Saving...' : Banners ? 'Update Hero Section' : 'Save Hero Section'}
               </Button>
             </Stack>
           </Box>
