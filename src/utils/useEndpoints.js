@@ -1,25 +1,27 @@
 'use client';
 
-import { usePaths } from "src/routes/paths";
+import { CONFIG_STATIC } from 'src/config-global';
+import { usePaths } from 'src/routes/paths';
 
 export function useEndpoints() {
-  const { locale } = usePaths(); 
+  const { locale } = usePaths();
+  const BASE_URL = CONFIG_STATIC.serverUrl;
 
   return {
-    chat: `/${locale}/api/chat`,
+    banners: `${BASE_URL}/api/banners/`,
+    chat: `${BASE_URL}/${locale}/api/chat`,
     auth: {
-      me: `/${locale}/auth/users/me/`,
-      signIn: `/${locale}/auth/jwt/create/`,
-      signUp: `/${locale}/auth/users/`,
+      me: `${BASE_URL}/${locale}/auth/users/me/`,
+      signIn: `${BASE_URL}/${locale}/auth/jwt/create/`,
+      signUp: `${BASE_URL}/${locale}/auth/users/`,
     },
     mail: {
-      list: `/${locale}/api/mail/list`,
-      details: `/${locale}/api/mail/details`,
-      labels: `/${locale}/api/mail/labels`,
+      list: `${BASE_URL}/${locale}/api/mail/list`,
+      details: `${BASE_URL}/${locale}/api/mail/details`,
+      labels: `${BASE_URL}/${locale}/api/mail/labels`,
     },
   };
 }
-
 
 // export const endpoints = {
 //   chat: '/api/chat',

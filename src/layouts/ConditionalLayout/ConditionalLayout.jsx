@@ -22,7 +22,8 @@ export default function ConditionalLayout({ children }) {
   const signIn = `${slice}/auth/jwt/sign-in/`;
   const signUp = `${slice}/auth/jwt/sign-up/`;
   const dashboard = `${slice}/dashboard/`;
-  const shouldHideLayout = pathname === signIn || pathname === signUp || pathname === dashboard;
+  const shouldHideLayout =
+    pathname === signIn || pathname === signUp || pathname.startsWith(`${slice}/dashboard`);
   // console.log(signIn);
 
   return (

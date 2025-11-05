@@ -61,7 +61,7 @@ export function usePaths() {
       },
       home: {
         root: `${ROOTS.DASHBOARD}/home`,
-        hero: `${ROOTS.DASHBOARD}/home/hero`,
+        heroList: `${ROOTS.DASHBOARD}/home/heroList`,
         success: `${ROOTS.DASHBOARD}/home/success`,
         membership: `${ROOTS.DASHBOARD}/home/membership`,
         services: `${ROOTS.DASHBOARD}/home/services`,

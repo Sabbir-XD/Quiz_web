@@ -86,8 +86,8 @@ export function useNavData() {
           path: paths.dashboard.home.root,
           icon: ICONS.dashboard,
           children: [
-            { title: 'Home part', path: paths.dashboard.home.root },
-            { title: 'Hero Part', path: paths.dashboard.home.hero },
+            { title: 'Hero part', path: paths.dashboard.home.root },
+            { title: 'Hero List', path: paths.dashboard.home.heroList },
             { title: 'Success part', path: paths.dashboard.home.success },
             { title: 'Membership part', path: paths.dashboard.home.membership },
             { title: 'Service part', path: paths.dashboard.home.services },

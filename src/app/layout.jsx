@@ -18,8 +18,8 @@ import { AuthProvider } from 'src/auth/context/jwt';
 
 import { routing } from '../i18n/routing';
 import ConditionalLayout from '../layouts/ConditionalLayout/ConditionalLayout';
+import { Toaster } from 'sonner';
 // import { notFound } from 'next/navigation';
-
 
 export const viewport = {
   width: 'device-width',
@@ -37,7 +37,6 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children, params }) {
-
   // const locale = await params;
   const { locale } = await params;
 
@@ -45,7 +44,7 @@ export default async function RootLayout({ children, params }) {
   //   notFound();
   // }
 
-  setRequestLocale(locale)
+  setRequestLocale(locale);
 
   const { messages } = await getRequestConfig(async ({ requestLocale }) => {
     const requested = await requestLocale;
@@ -55,7 +54,7 @@ export default async function RootLayout({ children, params }) {
 
     return {
       locale: selectedLocale,
-      messages: (await import(`/messages/${selectedLocale}.json`)).default
+      messages: (await import(`/messages/${selectedLocale}.json`)).default,
     };
   })({ requestLocale: locale });
 
@@ -72,11 +71,10 @@ export default async function RootLayout({ children, params }) {
               <MotionLazy>
                 <ProgressBar />
                 <SettingsDrawer />
+                <Toaster position="top-right" richColors />
                 <NextIntlClientProvider locale={locale}>
                   {/* Conditional Layout applied */}
-                  <ConditionalLayout>
-                    {children}
-                  </ConditionalLayout>
+                  <ConditionalLayout>{children}</ConditionalLayout>
                 </NextIntlClientProvider>
               </MotionLazy>
             </ThemeProvider>
