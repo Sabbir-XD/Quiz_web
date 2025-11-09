@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 
 import QuizModeSelection from './QuizModeSelection';
 import InstructionPDFPage from './InstructionPDFPage';
@@ -10,6 +10,8 @@ export default function InstructionsPage() {
   const [currentStep, setCurrentStep] = useState('instructions'); // 'instructions' | 'mode-selection' | 'quiz'
   const [quizMode, setQuizMode] = useState(null); // 'single' | 'all'
   const router = useRouter();
+  const { id } = useParams();
+  // console.log('Instruction ID:', id);
 
   // Move to mode selection after instructions
   const handleStartQuiz = () => {
@@ -28,5 +30,5 @@ export default function InstructionsPage() {
   }
 
   // Show instructions (default)
-  return <InstructionPDFPage onStartQuiz={handleStartQuiz} />;
+  return <InstructionPDFPage id={id} onStartQuiz={handleStartQuiz} />;
 }

@@ -1,60 +1,95 @@
+
+
 'use client';
 
-import { toast } from 'sonner';
 import { useEffect } from 'react';
 import { Icon } from '@iconify/react';
+import { toast } from 'sonner';
 import { useRouter, usePathname } from 'next/navigation';
+import PropTypes from 'prop-types';
 
 import { Box, Card, Stack, Button, CardMedia, Typography, IconButton } from '@mui/material';
 
 import { useEndpoints } from 'src/utils/useEndpoints';
-
 import useApi from 'src/api/api';
 import Loading from 'src/app/loading';
 
+// ------------------------------------------------------------
+
 export default function HeroList({ onCreate, onEdit }) {
   const { banners: bannerUrl } = useEndpoints();
-  const { deleteData } = useApi(bannerUrl);
+  const router = useRouter();
   const pathname = usePathname();
   const locale = pathname.split('/')[1] || 'en';
-  const router = useRouter();
 
-  const { data: banners, error, isLoading, mutate } = useApi(bannerUrl, { fetch: true });
+  const {
+    data: banners,
+    error,
+    isLoading,
+    mutate,
+    deleteData,
+  } = useApi(bannerUrl, {
+    fetch: true,
+  });
 
+  // Refresh list whenever the route changes
   useEffect(() => {
     mutate();
   }, [pathname, mutate]);
 
+  // Delete Handler
   const handleDelete = async (id) => {
-    // use `window.confirm` to avoid ESLint "no-restricted-globals" and be explicit
     if (!window.confirm('Are you sure you want to delete this banner?')) return;
 
     try {
-      await deleteData(`/${id}`);
+      await deleteData(`${id}/`);
       toast.success('Banner deleted successfully!');
-      mutate();
+      mutate(); // Refresh list after deletion
     } catch (err) {
+      console.error('Delete error:', err);
       toast.error('Failed to delete banner.');
     }
   };
 
+  // Add New Banner
   const handleAddNew = () => {
+    if (onCreate) {
+      onCreate();
+      return;
+    }
     router.push(`/${locale}/dashboard/home`);
-    onCreate?.();
   };
 
+  // Edit Banner
   const handleEdit = (banner) => {
-    // Ensure the ID is properly converted to string
     const editId = String(banner.id);
-    // Navigate to home page with the banner data in the URL
-    router.push(`/${locale}/dashboard/home?edit=${editId}`);
-    console.log('Editing banner:', banner); // Debug log
+    if (onEdit) {
+      onEdit(banner);
+      return;
+    }
+    router.push(`/${locale}/dashboard/home/${editId}/`);
   };
 
+  // Loading / Error / Empty States
   if (isLoading) return <Loading />;
-  if (error) return <Box sx={{ p: 3 }}>⚠️ Failed to load banners.</Box>;
-  if (!banners?.length) return <Box sx={{ p: 3 }}>No banners found.</Box>;
+  if (error)
+    return <Box sx={{ p: 3, textAlign: 'center' }}>⚠️ Failed to load banners. Please refresh.</Box>;
+  if (!banners?.length)
+    return (
+      <Box sx={{ p: 3, textAlign: 'center' }}>
+        <Typography variant="body1">No banners found.</Typography>
+        <Button
+          onClick={handleAddNew}
+          variant="contained"
+          sx={{ mt: 2, borderRadius: 2 }}
+          startIcon={<Icon icon="mdi:plus" />}
+        >
+          Add New Banner
+        </Button>
+      </Box>
+    );
 
+  // Main UI
   return (
     <Box sx={{ p: 3 }}>
       {/* Header */}
@@ -77,7 +112,7 @@ export default function HeroList({ onCreate, onEdit }) {
         </Button>
       </Stack>
 
-      {/* List */}
+      {/* Banner List */}
       <Stack spacing={2}>
         {banners.map((banner) => (
           <Card
@@ -99,8 +134,8 @@ export default function HeroList({ onCreate, onEdit }) {
             {/* Banner Image */}
             <CardMedia
               component="img"
-              image={banner.image}
-              alt={banner.title_english}
+              image={banner.image || '/placeholder-image.jpg'}
+              alt={banner.title_english || 'Banner image'}
               sx={{
                 width: 140,
                 height: 90,
@@ -116,7 +151,7 @@ export default function HeroList({ onCreate, onEdit }) {
                 {banner.title_english || 'Untitled'}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {banner.subtitle_english || 'No subtitle'}
+                {banner.subtitle_english || 'No subtitle available'}
               </Typography>
             </Box>
 
@@ -150,3 +185,12 @@ export default function HeroList({ onCreate, onEdit }) {
     </Box>
   );
 }
+
+// ------------------------------------------------------------
+
+HeroList.propTypes = {
+  onCreate: PropTypes.func,
+  onEdit: PropTypes.func,
+};
+
+

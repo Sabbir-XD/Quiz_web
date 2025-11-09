@@ -2,11 +2,16 @@
 
 import { Icon } from '@iconify/react';
 
-import { Box, Grid, Typography } from '@mui/material';
+import { Box, Button, Grid, Typography } from '@mui/material';
 
 export default function OurQuizServices() {
   const categories = [
-    {
+  
+    { 
+      quiz: {
+        id: 'id',
+        title: 'BCS Preparation'
+      },
       title: 'BCS Preparation',
       description: 'Practice model tests & previous year questions for BCS exams.',
       icon: 'mdi:book-open-page-variant',
@@ -176,7 +181,7 @@ export default function OurQuizServices() {
               </Typography>
 
               {/* Button */}
-              {/* <Button
+              <Button
                 variant="contained"
                 sx={{
                   background: cat.gradient,
@@ -193,7 +198,7 @@ export default function OurQuizServices() {
                 }}
               >
                 Start Quiz
-              </Button> */}
+              </Button>
             </Box>
           </Grid>
         ))}

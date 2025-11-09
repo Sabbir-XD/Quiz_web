@@ -1,4 +1,3 @@
-
 import { CONFIG_STATIC } from 'src/config-global';
 
 import InstructionsPage from 'src/components/Instruction/InstructionsPage';

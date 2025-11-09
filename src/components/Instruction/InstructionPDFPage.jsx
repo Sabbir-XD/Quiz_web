@@ -18,61 +18,181 @@ import {
 
 import InteractiveButton from '../button/InteractiveButton';
 
-export default function InstructionPDFPage({
-  pdfUrl = '/pdf/quiz-instructions.pdf',
-  downloadFileName = 'Quiz-Instructions.pdf',
-  onStartQuiz, // NEW: Accept callback prop
-}) {
+export default function InstructionPDFPage({ onStartQuiz, id }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [isIframeLoading, setIsIframeLoading] = useState(true);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const router = useRouter();
   const pathname = usePathname();
+
+  const pdfUrl = '/pdf/quiz-instructions.pdf';
+  const downloadFileName = 'Quiz-Instructions.pdf';
+
+  console.log(id);
+
   // Constants
   const TOTAL_PAGES = 3;
-
+ 
   // PDF content data
   const pdfPages = useMemo(
     () => [
-      {
-        page: 1,
-        title: '📚 Quiz Instructions',
-        content: [
-          'Welcome to our interactive learning platform!',
-          'This quiz is designed to test your knowledge and help you learn in a fun way.',
-          'Each question has multiple choices with only one correct answer.',
-          'Read each question carefully before selecting your answer.',
-        ],
-      },
-      {
-        page: 2,
-        title: '⏰ Time Management',
-        content: [
-          'You will have 30 seconds for each question in Single Mode.',
-          'The timer will be visible on the screen.',
-          'If time runs out, the quiz will automatically move to the next question.',
-          'Manage your time wisely to answer all questions.',
-        ],
-      },
-      {
-        page: 3,
-        title: '🎯 Scoring & Results',
-        content: [
-          'Each correct answer gives you 1 point.',
-          'No negative marking for wrong answers.',
-          'Your final score will be shown immediately after completion.',
-          'You can review your performance and see which answers were correct.',
-        ],
-      },
+      // 🔹 Quiz 1
+      [
+        {
+          quiz: { id: 1, title: 'Science Basics' },
+        },
+        {
+          page: 1,
+          title: '📚 Quiz Instructions',
+          content: [
+            'Welcome to the Science Basics quiz!',
+            'Test your knowledge of general science facts.',
+            'Each question has one correct answer.',
+            'Read carefully before choosing.',
+          ],
+        },
+        {
+          page: 2,
+          title: '⏰ Time Management',
+          content: [
+            'You have 30 seconds per question.',
+            'The timer will be visible on screen.',
+            'If time expires, it will auto-skip.',
+            'Stay focused for best results.',
+          ],
+        },
+        {
+          page: 3,
+          title: '🎯 Scoring & Results',
+          content: [
+            'Each correct answer = 1 point.',
+            'No negative marking.',
+            'Results show instantly after completion.',
+            'Review your answers anytime.',
+          ],
+        },
+      ],
+
+      // 🔹 Quiz 2
+      [
+        {
+          quiz: { id: 2, title: 'Math Challenge' },
+        },
+        {
+          page: 1,
+          title: '📚 Quiz Instructions',
+          content: [
+            'Welcome to the Math Challenge!',
+            'Sharpen your problem-solving skills.',
+            'Only one correct answer per question.',
+            'Double-check your calculations.',
+          ],
+        },
+        {
+          page: 2,
+          title: '⏰ Time Management',
+          content: [
+            'Each question has 45 seconds.',
+            'Avoid spending too long on one question.',
+            'The quiz will auto-skip after timeout.',
+            'Stay calm and focused.',
+          ],
+        },
+        {
+          page: 3,
+          title: '🎯 Scoring & Results',
+          content: [
+            'Correct = 2 points.',
+            'No deduction for wrong answers.',
+            'Instant results after submission.',
+            'You can view your score summary.',
+          ],
+        },
+      ],
+
+      // 🔹 Quiz 3
+      [
+        {
+          quiz: { id: 3, title: 'History Explorer' },
+        },
+        {
+          page: 1,
+          title: '📚 Quiz Instructions',
+          content: [
+            'Welcome to the History Explorer quiz!',
+            'Learn and test your historical knowledge.',
+            'Each question is multiple-choice.',
+            'Take your time to recall facts.',
+          ],
+        },
+        {
+          page: 2,
+          title: '⏰ Time Management',
+          content: [
+            'You have 40 seconds per question.',
+            'Timer visible at the top.',
+            'Auto-advance when time runs out.',
+            'Manage your pace carefully.',
+          ],
+        },
+        {
+          page: 3,
+          title: '🎯 Scoring & Results',
+          content: [
+            'Correct = 1 point.',
+            'No penalty for mistakes.',
+            'Results display instantly.',
+            'Check correct answers afterward.',
+          ],
+        },
+      ],
+
+      // 🔹 Quiz 4
+      [
+        {
+          quiz: { id: 4, title: 'English Vocabulary Test' },
+        },
+        {
+          page: 1,
+          title: '📚 Quiz Instructions',
+          content: [
+            'Welcome to the English Vocabulary Test!',
+            'Improve your word knowledge.',
+            'Choose the most appropriate meaning.',
+            'One correct answer per question.',
+          ],
+        },
+        {
+          page: 2,
+          title: '⏰ Time Management',
+          content: [
+            '30 seconds for each question.',
+            'Timer visible during quiz.',
+            'Auto-next if time expires.',
+            'Plan your time well.',
+          ],
+        },
+        {
+          page: 3,
+          title: '🎯 Scoring & Results',
+          content: [
+            '1 point per correct answer.',
+            'No negative marks.',
+            'Instant feedback on completion.',
+            'You can review missed words later.',
+          ],
+        },
+      ],
     ],
     []
   );
 
-  const currentPdfPage = useMemo(
-    () => pdfPages.find((p) => p.page === currentPage) || pdfPages[0],
-    [currentPage, pdfPages]
-  );
+  const currentPdfPage = useMemo(() => {
+    // Find the quiz pages matching the given id
+    const quizPages = pdfPages.find((quizSet) => quizSet[0].quiz.id.toString() === id.toString());
+    return quizPages ? quizPages.find((p) => p.page === currentPage) || quizPages[1] : null;
+  }, [currentPage, pdfPages, id]);
 
   // Navigation handlers
   const goToNextPage = useCallback(() => {
@@ -105,7 +225,7 @@ export default function InstructionPDFPage({
 
   // Handle start quiz button click
   const handleStartQuizClick = () => {
-    router.push(`${pathname}/quizMode/`);
+    router.push(`${pathname}/quizmode/`);
   };
 
   // Mobile layout - stacked vertically

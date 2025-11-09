@@ -1,44 +1,48 @@
 'use client';
 
-import { useEffect } from 'react';
+// no React hooks required here
 import Autoplay from 'embla-carousel-autoplay';
 import useEmblaCarousel from 'embla-carousel-react';
 import { useRouter, usePathname } from 'next/navigation';
 
 import { Box, Button, Typography } from '@mui/material';
-
 import { useEndpoints } from 'src/utils/useEndpoints';
-
 import useApi from 'src/api/api';
 import Loading from 'src/app/loading';
 
+// endpoints/api/loading not used in this static sample
 
 export default function HeroSlider() {
   const [emblaRef] = useEmblaCarousel({ loop: true, align: 'start' }, [Autoplay({ delay: 4000 })]);
 
   const pathname = usePathname();
   const router = useRouter();
+
   const { banners: bannerUrl } = useEndpoints();
 
   const { data: banners, error, isLoading, mutate } = useApi(bannerUrl, { fetch: true });
-  console.log("data", banners);
 
-  // Refetch when route changes
-  useEffect(() => {
-    mutate();
-  }, [pathname, mutate]);
+  if (isLoading) {
+    return <Loading />;
+  }
 
-  if (isLoading) return <Loading />;
-  if (error) return <Box>Failed to load banners.</Box>;
-  if (!banners) return null;
+  if (error || !banners) {
+    return (
+      <Box sx={{ height: '70vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        No banners available
+      </Box>
+    );
+  }
 
-  // https://i.ibb.co.com/LdSYR5Y8/Whats-App-Image-2025-11-01-at-3-54-27-PM.jpg
-  // https://i.ibb.co.com/NgGv8sLB/Build-atong-foundatiion.jpg
-  // https://i.ibb.co.com/3YscG1Jn/Learning-for-quiz.jpg
-  // https://i.ibb.co.com/wFg6H2VT/quiz-play.jpg
-  // https://i.ibb.co.com/dsc5Vb7G/group-study.jpg
+  // compute page URLs dynamically from each banner's quiz id
+  const bannersWithPages = banners.map((b) => ({
+    ...b,
+    page: b?.quiz?.id ? `${pathname}/instructions/${b.quiz.id}` : null,
+  }));
 
   const handleButtonClick = (pageUrl) => {
+    // navigate to the computed page URL
+    if (!pageUrl) return;
     router.push(pageUrl);
   };
 
@@ -53,7 +57,7 @@ export default function HeroSlider() {
       }}
     >
       <Box sx={{ display: 'flex', height: '100%' }}>
-        {banners?.map((slide) => (
+        {bannersWithPages?.map((slide) => (
           <Box
             key={slide.id}
             sx={{

@@ -6,6 +6,11 @@ import { useCallback } from 'react';
 import { axiosInstance } from 'src/utils/axios-instance';
 
 // --------------------
+// Helper: Ensure trailing slash for Django
+// --------------------
+const ensureTrailingSlash = (url) => url.endsWith('/') ? url : `${url}/`;
+
+// --------------------
 // Default SWR fetcher
 // --------------------
 const fetcher = async (url) => {
@@ -18,13 +23,12 @@ const fetcher = async (url) => {
 // --------------------
 export default function useApi(url, options = {}) {
   const {
-    fetch = true, // auto fetch toggle
-    revalidateOnFocus = true, // SWR option
-    revalidateOnReconnect = true, // SWR option
-    refreshInterval = 0, // auto refresh interval in ms (0 = disabled)
+    fetch = true,
+    revalidateOnFocus = true,
+    revalidateOnReconnect = true,
+    refreshInterval = 0,
   } = options;
 
-  // useSWR for GET request
   const { data, error, isLoading, mutate, isValidating } = useSWR(fetch ? url : null, fetcher, {
     revalidateOnFocus,
     revalidateOnReconnect,
@@ -35,9 +39,16 @@ export default function useApi(url, options = {}) {
   // POST (Create)
   // --------------------
   const postData = useCallback(
-    async (payload) => {
-      const res = await axiosInstance.post(url, payload);
-      await mutate(); // refresh cache
+    async (endpointOrPayload, payloadIfEndpoint) => {
+      const isPayloadOnly = payloadIfEndpoint === undefined;
+      const endpoint = isPayloadOnly
+        ? ensureTrailingSlash(url)
+        : ensureTrailingSlash(`${url}${endpointOrPayload}`);
+      const payload = isPayloadOnly ? endpointOrPayload : payloadIfEndpoint;
+
+      console.log('POST to:', endpoint);
+      const res = await axiosInstance.post(endpoint, payload);
+      await mutate();
       return res.data;
     },
     [url, mutate]
@@ -47,8 +58,15 @@ export default function useApi(url, options = {}) {
   // PUT (Update Full)
   // --------------------
   const putData = useCallback(
-    async (payload) => {
-      const res = await axiosInstance.put(url, payload);
+    async (idOrPayload, payloadIfId) => {
+      const isPayloadOnly = payloadIfId === undefined;
+      const endpoint = isPayloadOnly
+        ? ensureTrailingSlash(url)
+        : ensureTrailingSlash(`${ensureTrailingSlash(url)}${idOrPayload}`);
+      const payload = isPayloadOnly ? idOrPayload : payloadIfId;
+
+      console.log('PUT to:', endpoint);
+      const res = await axiosInstance.put(endpoint, payload);
       await mutate();
       return res.data;
     },
@@ -59,8 +77,15 @@ export default function useApi(url, options = {}) {
   // PATCH (Update Partial)
   // --------------------
   const patchData = useCallback(
-    async (payload) => {
-      const res = await axiosInstance.patch(url, payload);
+    async (idOrPayload, payloadIfId) => {
+      const isPayloadOnly = payloadIfId === undefined;
+      const endpoint = isPayloadOnly
+        ? ensureTrailingSlash(url)
+        : ensureTrailingSlash(`${ensureTrailingSlash(url)}${idOrPayload}`);
+      const payload = isPayloadOnly ? idOrPayload : payloadIfId;
+
+      console.log('PATCH to:', endpoint);
+      const res = await axiosInstance.patch(endpoint, payload);
       await mutate();
       return res.data;
     },
@@ -74,9 +99,10 @@ export default function useApi(url, options = {}) {
     async (idOrUrlParam) => {
       const deleteUrl =
         typeof idOrUrlParam === 'string' || typeof idOrUrlParam === 'number'
-          ? `${url}${url.endsWith('/') ? '' : '/'}${idOrUrlParam}`
-          : url;
+          ? ensureTrailingSlash(`${ensureTrailingSlash(url)}${idOrUrlParam}`)
+          : ensureTrailingSlash(url);
 
+      console.log('DELETE:', deleteUrl);
       const res = await axiosInstance.delete(deleteUrl);
       await mutate();
       return res.data;
