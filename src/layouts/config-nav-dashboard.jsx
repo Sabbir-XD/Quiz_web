@@ -64,7 +64,7 @@ export function useNavData() {
           children: [
             { title: 'Banner Create', path: paths.dashboard.home.root },
             { title: 'Banner List', path: paths.dashboard.home.heroList },
-            { title: 'Instruction Create', path: paths.dashboard.home.instruction },
+            // { title: 'Instruction Create', path: paths.dashboard.home.instruction },
             { title: 'Success part', path: paths.dashboard.home.success },
             { title: 'Membership part', path: paths.dashboard.home.membership },
             { title: 'Service part', path: paths.dashboard.home.services },
@@ -86,22 +86,13 @@ export function useNavData() {
       subheader: 'Management',
       items: [
         {
-          title: 'Projects',
-          path: '/dashboard/projects',
-          icon: ICONS.folder,
-          children: [
-            { title: 'Active', path: '/dashboard/projects/active' },
-            { title: 'Archived', path: '/dashboard/projects/archived' },
-          ],
-        },
-        {
-          title: 'Users',
-          path: paths.dashboard.group.root,
+          title: 'Quiz Page',
+          path: paths.dashboard.quizzes.root,
           icon: ICONS.user,
           children: [
-            { title: 'User List', path: paths.dashboard.group.root },
-            { title: 'Create User', path: paths.dashboard.group.five },
-            { title: 'User Roles', path: paths.dashboard.group.six },
+            { title: 'Quiz Create ', path: paths.dashboard.quizzes.root },
+            { title: 'Quiz List', path: paths.dashboard.quizzes.five },
+            { title: 'User Roles', path: paths.dashboard.quizzes.six },
           ],
         },
 

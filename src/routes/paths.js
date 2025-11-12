@@ -54,15 +54,15 @@ export function usePaths() {
       root: ROOTS.DASHBOARD,
       two: `${ROOTS.DASHBOARD}/two`,
       three: `${ROOTS.DASHBOARD}/three`,
-      group: {
-        root: `${ROOTS.DASHBOARD}/group`,
-        five: `${ROOTS.DASHBOARD}/group/five`,
-        six: `${ROOTS.DASHBOARD}/group/six`,
+      quizzes: {
+        root: `${ROOTS.DASHBOARD}/quizzes`,
+        five: `${ROOTS.DASHBOARD}/quizzes/five`,
+        six: `${ROOTS.DASHBOARD}/quizzes/six`,
       },
       home: {
         root: `${ROOTS.DASHBOARD}/home`,
         heroList: `${ROOTS.DASHBOARD}/home/herolist`,
-        instruction: `${ROOTS.DASHBOARD}/home/instruction`,
+        // instruction: `${ROOTS.DASHBOARD}/home/instruction`,
         success: `${ROOTS.DASHBOARD}/home/success`,
         membership: `${ROOTS.DASHBOARD}/home/membership`,
         services: `${ROOTS.DASHBOARD}/home/services`,
