@@ -4,8 +4,8 @@ import { toast } from 'sonner';
 import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
 import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm, Controller } from 'react-hook-form';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import { styled } from '@mui/material/styles';
 import {
@@ -13,17 +13,18 @@ import {
   Paper,
   Stack,
   Button,
+  Select,
+  MenuItem,
   TextField,
   IconButton,
   Typography,
-  CircularProgress,
-  MenuItem,
-  Select,
   InputLabel,
   FormControl,
+  CircularProgress,
 } from '@mui/material';
 
 import { useEndpoints } from 'src/utils/useEndpoints';
+
 import useApi from 'src/api/api';
 import Loading from 'src/app/loading';
 
@@ -46,7 +47,7 @@ HeroForm.propTypes = {
 export default function HeroForm({ editId }) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { banners: bannerUrl } = useEndpoints();
+  const { banners: bannerUrl, get_quizzes: quizzesData } = useEndpoints();
 
   const editBannerId = editId || searchParams.get('edit');
 
@@ -73,50 +74,47 @@ export default function HeroForm({ editId }) {
     },
   });
 
+  // Fetch existing banner data if editing
   const fetchUrl = editBannerId ? `${bannerUrl.replace(/\/$/, '')}/${editBannerId}` : null;
 
+  // Fetch banner data for editing
   const {
     data: bannerData,
     error: fetchError,
     isLoading: isFetching,
-  } = useApi(fetchUrl, {
-    fetch: !!editBannerId,
-  });
+  } = useApi(fetchUrl, { fetch: !!editBannerId });
 
+  // API hooks for creating and updating banners
   const { postData, putData } = useApi(bannerUrl, { fetch: false });
 
-  // Fetch quiz list for dropdown
-  useEffect(() => {
-    const fetchQuiz = async () => {
-      try {
-        const res = await fetch('http://192.168.88.227:8090/api/get_quiz/');
-        const data = await res.json();
-        setQuizList(data);
-      } catch (error) {
-        console.error('Error fetching quizzes:', error);
-        toast.error('Failed to load quiz list');
-      } finally {
-        setLoadingQuiz(false);
-      }
-    };
-    fetchQuiz();
-  }, []);
+  // Fetch quizzes for the select dropdown
+  const { data: quizData, mutate } = useApi(quizzesData, { fetch: true });
 
+  // Update quiz list when quiz data changes
   useEffect(() => {
-    if (bannerData && editBannerId) {
+    if (quizData) setQuizList(quizData);
+    setLoadingQuiz(!quizData);
+    mutate();
+  }, [quizData, mutate]);
+
+  // Populate form when banner data is loaded
+  useEffect(() => {
+    if (bannerData && editBannerId && quizList.length > 0) {
+      // bannerData may provide quiz either as `quiz` object or `quiz_id` field.
+      // Normalize to string because Select option values are strings below.
+      const quizIdFromData = bannerData.quiz?.id ?? bannerData.quiz_id ?? '';
+
       reset({
-        quiz_id: bannerData.quiz?.id || '',
+        quiz_id: quizIdFromData ? String(quizIdFromData) : '',
         title_english: bannerData.title_english || '',
         subtitle_english: bannerData.subtitle_english || '',
         button_english: bannerData.button_english || '',
       });
-
-      if (bannerData.image) {
-        setImagePreview(bannerData.image);
-      }
+      if (bannerData.image) setImagePreview(bannerData.image);
     }
-  }, [bannerData, editBannerId, reset]);
+  }, [bannerData, editBannerId, reset, quizList]);
 
+  // Handle image file selection
   const handleImageChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -134,19 +132,20 @@ export default function HeroForm({ editId }) {
     setImageFile(file);
 
     const reader = new FileReader();
-    reader.onloadend = () => {
-      setImagePreview(reader.result);
-    };
+    reader.onloadend = () => setImagePreview(reader.result);
     reader.readAsDataURL(file);
   };
 
+  // Handle image removal
   const handleRemoveImage = () => {
     setImagePreview(null);
     setImageFile(null);
     setValue('image', null);
   };
 
+  // Handle form submission
   const onSubmit = async (data) => {
+    // Validate image presence for new banners
     if (!editBannerId && !imageFile && !imagePreview) {
       setError('image', { message: 'Image is required' });
       toast.error('Please upload an image');
@@ -155,10 +154,9 @@ export default function HeroForm({ editId }) {
 
     setIsSubmitting(true);
 
+    // Submit form data
     try {
-      // Create FormData
       const formData = new FormData();
-
       const payload = {
         quiz_id: Number(data.quiz_id),
         title_english: data.title_english,
@@ -166,60 +164,48 @@ export default function HeroForm({ editId }) {
         button_english: data.button_english,
       };
 
-      // Add all regular fields
+      // Append payload data to formData
       Object.keys(payload).forEach((key) => {
         formData.append(key, payload[key].toString());
       });
 
-      // Handle image upload
-      if (imageFile) {
-        formData.append('image', imageFile);
-      }
+      // Append image file if selected
+      if (imageFile) formData.append('image', imageFile);
 
-      // Log for debugging
-      console.log('Payload:', payload);
-      console.log('Image:', imageFile ? 'File uploaded' : 'No file');
-      console.log('Banner URL:', bannerUrl);
-      console.log('Edit ID:', editBannerId);
-
-      let response;
+      // Call appropriate API method
       if (editBannerId) {
-        
-        response = await putData(editBannerId, formData);
+        // Update existing banner
+        await putData(editBannerId, formData);
         toast.success('Banner updated successfully!');
       } else {
-        
-        response = await postData(formData);
+        // Create new banner
+        await postData(formData);
         toast.success('Banner created successfully!');
       }
 
-      console.log('Response:', response);
+      // Redirect to banner list after success
       router.push('/en/dashboard/home/herolist');
     } catch (err) {
-      console.error('Submit error:', err);
-      console.error('Error response:', err.response);
-      console.error('Error data:', err.response?.data);
-
       const errorMessage = err.response?.data?.message || err.message || 'Operation failed';
       toast.error(
         editBannerId ? `Failed to update: ${errorMessage}` : `Failed to create: ${errorMessage}`
       );
     } finally {
+      // Reset submitting state
       setIsSubmitting(false);
     }
   };
 
-
-  const handleCancel = () => {
-    router.push('/en/dashboard/home/herolist');
-  };
-
+  // Handle cancel action
+  const handleCancel = () => router.push('/en/dashboard/home/herolist');
+  // Render loading or error states
   if (isFetching) return <Loading />;
 
+  // Render error state
   if (fetchError) {
     return (
       <Box sx={{ p: 3, textAlign: 'center' }}>
-        <Typography color="error"> Failed to load banner data</Typography>
+        <Typography color="error">Failed to load banner data</Typography>
         <Button onClick={handleCancel} sx={{ mt: 2 }}>
           Go Back
         </Button>
@@ -227,6 +213,7 @@ export default function HeroForm({ editId }) {
     );
   }
 
+  // Render main form
   return (
     <Box
       sx={{
@@ -250,7 +237,7 @@ export default function HeroForm({ editId }) {
                 </IconButton>
               </Stack>
 
-              {/* Quiz Select Field */}
+              {/* Quiz Select */}
               <Controller
                 name="quiz_id"
                 control={control}
@@ -263,8 +250,8 @@ export default function HeroForm({ editId }) {
                         <MenuItem disabled>Loading quizzes...</MenuItem>
                       ) : (
                         quizList.map((quiz) => (
-                          <MenuItem key={quiz.id} value={quiz.id}>
-                            {quiz.title}
+                          <MenuItem key={quiz.id} value={String(quiz.id)}>
+                            {quiz?.title}
                           </MenuItem>
                         ))
                       )}

@@ -10,6 +10,9 @@ export function useEndpoints() {
 
   return {
     banners: `${BASE_URL}/api/banners/`,
+    get_quizzes: `${BASE_URL}/api/get_quiz/`,
+    get_quiz_details: (quizId) => `${BASE_URL}/${locale}/api/get_quiz/${quizId}/`,
+    submit_quiz: (quizId) => `${BASE_URL}/${locale}/api/get_quiz/${quizId}/submit/`,
     chat: `${BASE_URL}/${locale}/api/chat`,
     auth: {
       me: `${BASE_URL}/${locale}/auth/users/me/`,

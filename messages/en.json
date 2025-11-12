@@ -6,8 +6,27 @@
     "home": "Home",
     "pricing": "Pricing",
     "terms": "Terms & Conditions",
-    "dashboard" : "Dashboard",
+    "dashboard": "Dashboard",
     "login": "Login",
     "logout": "Logout"
+  },
+  "Footer": {
+    "aboutText": "Master your skills with our interactive quiz platform. Practice, learn, and excel in your career with thousands of curated questions.",
+    "contactEmail": "support@quizmaster.com",
+    "contactPhone": "+880 1234-567890",
+    "contactAddress": "Dhaka, Bangladesh",
+    "followUs": "Follow Us",
+    "quickLinks": "Quick Links",
+    "categories": "Categories",
+    "newsletter": "Get Quiz Updates",
+    "newsletterDesc": "Subscribe to receive new quiz notifications and learning tips.",
+    "subscribe": "Subscribe",
+    "rights": "All rights reserved.",
+    "madeWith": "Made with ❤️ for Bangladeshi Learners",
+    "sections": {
+      "quick": ["Home", "All Quizzes", "BCS Preparation", "IELTS Practice", "Job Tests"],
+      "categories": ["Programming", "Mathematics", "Science", "English Grammar", "Current Affairs"],
+      "support": ["About Us", "Contact", "Privacy Policy", "Terms of Service", "FAQ"]
+    }
   }
 }

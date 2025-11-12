@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState, useCallback } from 'react';
+import { useMemo, useState, useEffect, useCallback } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 
 import DownloadIcon from '@mui/icons-material/Download';
@@ -9,18 +9,25 @@ import {
   Card,
   Button,
   Tooltip,
-  useTheme,
   Typography,
   IconButton,
   useMediaQuery,
   CircularProgress,
+  useTheme,
 } from '@mui/material';
 
 import InteractiveButton from '../button/InteractiveButton';
+import { useEndpoints } from 'src/utils/useEndpoints';
+import useApi from 'src/api/api';
+import Loading from 'src/app/loading';
 
 export default function InstructionPDFPage({ onStartQuiz, id }) {
+  // All hooks must be declared first
   const [currentPage, setCurrentPage] = useState(1);
   const [isIframeLoading, setIsIframeLoading] = useState(true);
+  const [quizPdfInstruction, setQuizPdfInstruction] = useState(null);
+  const [currentInstruction, setCurrentInstruction] = useState(null);
+
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const router = useRouter();
@@ -29,181 +36,39 @@ export default function InstructionPDFPage({ onStartQuiz, id }) {
   const pdfUrl = '/pdf/quiz-instructions.pdf';
   const downloadFileName = 'Quiz-Instructions.pdf';
 
-  console.log(id);
+  const { get_quizzes: quizzesData } = useEndpoints();
+  const { data: quizData, isLoading } = useApi(quizzesData, { fetch: true });
 
-  // Constants
-  const TOTAL_PAGES = 3;
- 
-  // PDF content data
-  const pdfPages = useMemo(
-    () => [
-      // 🔹 Quiz 1
-      [
-        {
-          quiz: { id: 1, title: 'Science Basics' },
-        },
-        {
-          page: 1,
-          title: '📚 Quiz Instructions',
-          content: [
-            'Welcome to the Science Basics quiz!',
-            'Test your knowledge of general science facts.',
-            'Each question has one correct answer.',
-            'Read carefully before choosing.',
-          ],
-        },
-        {
-          page: 2,
-          title: '⏰ Time Management',
-          content: [
-            'You have 30 seconds per question.',
-            'The timer will be visible on screen.',
-            'If time expires, it will auto-skip.',
-            'Stay focused for best results.',
-          ],
-        },
-        {
-          page: 3,
-          title: '🎯 Scoring & Results',
-          content: [
-            'Each correct answer = 1 point.',
-            'No negative marking.',
-            'Results show instantly after completion.',
-            'Review your answers anytime.',
-          ],
-        },
-      ],
+  // Hooks that depend on quizData
+  useEffect(() => {
+    if (quizData && id) {
+      const quiz = quizData.find((q) => q.id.toString() === id.toString());
+      if (quiz) {
+        setQuizPdfInstruction(quiz);
+        setCurrentInstruction(quiz.instruction?.find((i) => i.page === 1));
+      }
+    }
+  }, [quizData, id]);
 
-      // 🔹 Quiz 2
-      [
-        {
-          quiz: { id: 2, title: 'Math Challenge' },
-        },
-        {
-          page: 1,
-          title: '📚 Quiz Instructions',
-          content: [
-            'Welcome to the Math Challenge!',
-            'Sharpen your problem-solving skills.',
-            'Only one correct answer per question.',
-            'Double-check your calculations.',
-          ],
-        },
-        {
-          page: 2,
-          title: '⏰ Time Management',
-          content: [
-            'Each question has 45 seconds.',
-            'Avoid spending too long on one question.',
-            'The quiz will auto-skip after timeout.',
-            'Stay calm and focused.',
-          ],
-        },
-        {
-          page: 3,
-          title: '🎯 Scoring & Results',
-          content: [
-            'Correct = 2 points.',
-            'No deduction for wrong answers.',
-            'Instant results after submission.',
-            'You can view your score summary.',
-          ],
-        },
-      ],
+  useEffect(() => {
+    if (quizPdfInstruction) {
+      const pageData = quizPdfInstruction.instruction?.find((i) => i.page === currentPage);
+      setCurrentInstruction(pageData);
+    }
+  }, [currentPage, quizPdfInstruction]);
 
-      // 🔹 Quiz 3
-      [
-        {
-          quiz: { id: 3, title: 'History Explorer' },
-        },
-        {
-          page: 1,
-          title: '📚 Quiz Instructions',
-          content: [
-            'Welcome to the History Explorer quiz!',
-            'Learn and test your historical knowledge.',
-            'Each question is multiple-choice.',
-            'Take your time to recall facts.',
-          ],
-        },
-        {
-          page: 2,
-          title: '⏰ Time Management',
-          content: [
-            'You have 40 seconds per question.',
-            'Timer visible at the top.',
-            'Auto-advance when time runs out.',
-            'Manage your pace carefully.',
-          ],
-        },
-        {
-          page: 3,
-          title: '🎯 Scoring & Results',
-          content: [
-            'Correct = 1 point.',
-            'No penalty for mistakes.',
-            'Results display instantly.',
-            'Check correct answers afterward.',
-          ],
-        },
-      ],
-
-      // 🔹 Quiz 4
-      [
-        {
-          quiz: { id: 4, title: 'English Vocabulary Test' },
-        },
-        {
-          page: 1,
-          title: '📚 Quiz Instructions',
-          content: [
-            'Welcome to the English Vocabulary Test!',
-            'Improve your word knowledge.',
-            'Choose the most appropriate meaning.',
-            'One correct answer per question.',
-          ],
-        },
-        {
-          page: 2,
-          title: '⏰ Time Management',
-          content: [
-            '30 seconds for each question.',
-            'Timer visible during quiz.',
-            'Auto-next if time expires.',
-            'Plan your time well.',
-          ],
-        },
-        {
-          page: 3,
-          title: '🎯 Scoring & Results',
-          content: [
-            '1 point per correct answer.',
-            'No negative marks.',
-            'Instant feedback on completion.',
-            'You can review missed words later.',
-          ],
-        },
-      ],
-    ],
-    []
-  );
-
-  const currentPdfPage = useMemo(() => {
-    // Find the quiz pages matching the given id
-    const quizPages = pdfPages.find((quizSet) => quizSet[0].quiz.id.toString() === id.toString());
-    return quizPages ? quizPages.find((p) => p.page === currentPage) || quizPages[1] : null;
-  }, [currentPage, pdfPages, id]);
+  
 
   // Navigation handlers
   const goToNextPage = useCallback(() => {
-    setCurrentPage((prev) => Math.min(prev + 1, TOTAL_PAGES));
-  }, []);
+    setCurrentPage((prev) => Math.min(prev + 1, quizPdfInstruction?.total_instruction_pages || 1));
+  }, [quizPdfInstruction]);
 
   const goToPreviousPage = useCallback(() => {
     setCurrentPage((prev) => Math.max(prev - 1, 1));
   }, []);
 
-  // Download PDF handler
+  // 📥 Download PDF
   const downloadPDF = useCallback(() => {
     try {
       const link = document.createElement('a');
@@ -218,17 +83,17 @@ export default function InstructionPDFPage({ onStartQuiz, id }) {
     }
   }, [pdfUrl, downloadFileName]);
 
-  // Iframe load handler
+  // 🧩 Iframe load
   const handleIframeLoad = useCallback(() => {
     setIsIframeLoading(false);
   }, []);
 
-  // Handle start quiz button click
+  // 🚀 Start Quiz
   const handleStartQuizClick = () => {
     router.push(`${pathname}/quizmode/`);
   };
 
-  // Mobile layout - stacked vertically
+  // ✅ Mobile layout
   if (isMobile) {
     return (
       <Box
@@ -238,13 +103,7 @@ export default function InstructionPDFPage({ onStartQuiz, id }) {
           p: 2,
         }}
       >
-        <Card
-          sx={{
-            borderRadius: 2,
-            boxShadow: 3,
-            mb: 2,
-          }}
-        >
+        <Card sx={{ borderRadius: 2, boxShadow: 3, mb: 2 }}>
           <Box sx={{ p: 3 }}>
             <Box
               sx={{
@@ -271,7 +130,7 @@ export default function InstructionPDFPage({ onStartQuiz, id }) {
               </Tooltip>
             </Box>
 
-            {/* PDF Iframe Preview */}
+            {/* PDF Iframe */}
             <Box
               sx={{
                 border: '2px solid #e0e0e0',
@@ -307,27 +166,30 @@ export default function InstructionPDFPage({ onStartQuiz, id }) {
 
         <Card sx={{ borderRadius: 2, boxShadow: 3 }}>
           <Box sx={{ p: 3 }}>
-            <Typography
-              variant="h5"
-              sx={{
-                fontWeight: 'bold',
-                color: 'primary.main',
-                mb: 3,
-                textAlign: 'center',
-              }}
-            >
-              {currentPdfPage.title}
-            </Typography>
+            {currentInstruction ? (
+              <>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    fontWeight: 'bold',
+                    color: 'primary.main',
+                    mb: 3,
+                    textAlign: 'center',
+                  }}
+                >
+                  {currentInstruction.title_en}
+                </Typography>
 
-            {currentPdfPage.content.map((line, index) => (
-              <Typography
-                key={index}
-                variant="body1"
-                sx={{ mb: 2, lineHeight: 1.8, color: 'text.primary' }}
-              >
-                {index + 1}. {line}
+                <Box
+                  sx={{ typography: 'body1', lineHeight: 1.8, color: 'text.primary' }}
+                  dangerouslySetInnerHTML={{ __html: currentInstruction.content }}
+                />
+              </>
+            ) : (
+              <Typography align="center" color="text.secondary">
+                No instruction found.
               </Typography>
-            ))}
+            )}
 
             {/* Navigation */}
             <Box
@@ -348,7 +210,7 @@ export default function InstructionPDFPage({ onStartQuiz, id }) {
                 ← Previous
               </Button>
 
-              {currentPage === TOTAL_PAGES ? (
+              {currentPage === quizPdfInstruction?.total_instruction_pages ? (
                 <InteractiveButton
                   color="success"
                   size="large"
@@ -370,7 +232,7 @@ export default function InstructionPDFPage({ onStartQuiz, id }) {
     );
   }
 
-  // Desktop layout - side by side
+  // Desktop layout
   return (
     <Box
       sx={{
@@ -380,7 +242,7 @@ export default function InstructionPDFPage({ onStartQuiz, id }) {
         alignItems: 'stretch',
       }}
     >
-      {/* Left Side - Fixed Instructions */}
+      {/* Left: Instructions */}
       <Box
         sx={{
           width: '40%',
@@ -403,27 +265,34 @@ export default function InstructionPDFPage({ onStartQuiz, id }) {
           }}
         >
           <Box sx={{ flex: 1 }}>
-            <Typography
-              variant="h4"
-              sx={{
-                fontWeight: 'bold',
-                color: 'primary.main',
-                mb: 3,
-                textAlign: 'center',
-              }}
-            >
-              {currentPdfPage.title}
-            </Typography>
+            {currentInstruction ? (
+              <>
+                <Typography
+                  variant="h4"
+                  sx={{
+                    fontWeight: 'bold',
+                    color: 'primary.main',
+                    mb: 3,
+                    textAlign: 'center',
+                  }}
+                >
+                  {currentInstruction.title_en}
+                </Typography>
 
-            {currentPdfPage.content.map((line, index) => (
-              <Typography
-                key={index}
-                variant="body1"
-                sx={{ mb: 2, lineHeight: 1.8, color: 'text.primary' }}
-              >
-                {index + 1}. {line}
+                <Box
+                  sx={{
+                    typography: 'body1',
+                    lineHeight: 1.8,
+                    color: 'text.primary',
+                  }}
+                  dangerouslySetInnerHTML={{ __html: currentInstruction.content }}
+                />
+              </>
+            ) : (
+              <Typography color="text.secondary" align="center">
+                No instruction found.
               </Typography>
-            ))}
+            )}
           </Box>
 
           {/* Navigation */}
@@ -444,7 +313,7 @@ export default function InstructionPDFPage({ onStartQuiz, id }) {
               ← Previous
             </Button>
 
-            {currentPage === TOTAL_PAGES ? (
+            {currentPage === quizPdfInstruction?.total_instruction_pages ? (
               <InteractiveButton color="success" size="large" onClick={handleStartQuizClick}>
                 🚀 Start Quiz
               </InteractiveButton>
@@ -457,7 +326,7 @@ export default function InstructionPDFPage({ onStartQuiz, id }) {
         </Card>
       </Box>
 
-      {/* Right Side - PDF Viewer */}
+      {/* Right: PDF Viewer */}
       <Box
         sx={{
           width: '70%',
@@ -491,7 +360,7 @@ export default function InstructionPDFPage({ onStartQuiz, id }) {
           </Tooltip>
         </Box>
 
-        {/* PDF Iframe Preview */}
+        {/* PDF Iframe */}
         <Box
           sx={{
             border: '2px solid #e0e0e0',
@@ -518,3 +387,4 @@ export default function InstructionPDFPage({ onStartQuiz, id }) {
     </Box>
   );
 }
+

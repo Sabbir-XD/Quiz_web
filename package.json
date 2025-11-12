@@ -61,6 +61,7 @@
     "sooner": "^1.1.1",
     "stylis": "^4.3.2",
     "stylis-plugin-rtl": "^2.1.1",
+    "sweetalert2": "^11.26.3",
     "swr": "^2.3.6",
     "zod": "^3.23.8"
   },

@@ -1,26 +1,26 @@
-
-
 'use client';
 
-import { useEffect } from 'react';
-import { Icon } from '@iconify/react';
 import { toast } from 'sonner';
-import { useRouter, usePathname } from 'next/navigation';
 import PropTypes from 'prop-types';
+import { Icon } from '@iconify/react';
+import { useState, useEffect } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
 
 import { Box, Card, Stack, Button, CardMedia, Typography, IconButton } from '@mui/material';
 
 import { useEndpoints } from 'src/utils/useEndpoints';
+
 import useApi from 'src/api/api';
 import Loading from 'src/app/loading';
+import { ConfirmDialog } from 'src/layouts/components/sooner/ConfirmDialog';
 
 // ------------------------------------------------------------
 
 export default function HeroList({ onCreate, onEdit }) {
-  const { banners: bannerUrl } = useEndpoints();
   const router = useRouter();
   const pathname = usePathname();
   const locale = pathname.split('/')[1] || 'en';
+  const { banners: bannerUrl } = useEndpoints();
 
   const {
     data: banners,
@@ -32,23 +32,34 @@ export default function HeroList({ onCreate, onEdit }) {
     fetch: true,
   });
 
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [selectedBanner, setSelectedBanner] = useState(null);
+
   // Refresh list whenever the route changes
   useEffect(() => {
     mutate();
   }, [pathname, mutate]);
 
-  // Delete Handler
-  const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this banner?')) return;
-
+  // Delete handler
+  const handleDeleteConfirm = async () => {
+    if (!selectedBanner) return;
     try {
-      await deleteData(`${id}/`);
+      await deleteData(`${selectedBanner.id}/`);
       toast.success('Banner deleted successfully!');
       mutate(); // Refresh list after deletion
     } catch (err) {
       console.error('Delete error:', err);
       toast.error('Failed to delete banner.');
+    } finally {
+      setConfirmOpen(false);
+      setSelectedBanner(null);
     }
+  };
+
+  // Open Delete Confirmation Dialog
+  const openDeleteDialog = (banner) => {
+    setSelectedBanner(banner);
+    setConfirmOpen(true);
   };
 
   // Add New Banner
@@ -63,17 +74,16 @@ export default function HeroList({ onCreate, onEdit }) {
   // Edit Banner
   const handleEdit = (banner) => {
     const editId = String(banner.id);
-    if (onEdit) {
-      onEdit(banner);
-      return;
-    }
-    router.push(`/${locale}/dashboard/home/${editId}/`);
+    // if (onEdit) return onEdit(banner.id);
+    return router.push(`/${locale}/dashboard/home/edit/${editId}`);
   };
 
   // Loading / Error / Empty States
   if (isLoading) return <Loading />;
+
   if (error)
     return <Box sx={{ p: 3, textAlign: 'center' }}>⚠️ Failed to load banners. Please refresh.</Box>;
+
   if (!banners?.length)
     return (
       <Box sx={{ p: 3, textAlign: 'center' }}>
@@ -91,7 +101,15 @@ export default function HeroList({ onCreate, onEdit }) {
 
   // Main UI
   return (
-    <Box sx={{ p: 3 }}>
+    <Box
+      sx={{
+        p: {
+          lg: 10,
+          md: 5,
+          xs: 3,
+        },
+      }}
+    >
       {/* Header */}
       <Stack direction="row" justifyContent="space-between" alignItems="center" mb={3}>
         <Typography variant="h5" fontWeight={700}>
@@ -170,7 +188,7 @@ export default function HeroList({ onCreate, onEdit }) {
 
               <IconButton
                 color="error"
-                onClick={() => handleDelete(banner.id)}
+                onClick={() => openDeleteDialog(banner)}
                 sx={{
                   bgcolor: 'rgba(211,47,47,0.08)',
                   '&:hover': { bgcolor: 'rgba(211,47,47,0.15)' },
@@ -182,6 +200,19 @@ export default function HeroList({ onCreate, onEdit }) {
           </Card>
         ))}
       </Stack>
+
+      {/* Confirm Dialog */}
+      <ConfirmDialog
+        open={confirmOpen}
+        title="Delete Banner?"
+        content={`Are you sure you want to delete "${selectedBanner?.title_english}"? This action cannot be undone.`}
+        onClose={() => setConfirmOpen(false)}
+        action={
+          <Button variant="contained" color="error" onClick={handleDeleteConfirm}>
+            Delete
+          </Button>
+        }
+      />
     </Box>
   );
 }
@@ -192,5 +223,3 @@ HeroList.propTypes = {
   onCreate: PropTypes.func,
   onEdit: PropTypes.func,
 };
-
-

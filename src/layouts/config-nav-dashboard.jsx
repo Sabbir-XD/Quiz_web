@@ -42,33 +42,6 @@ const ICONS = {
   dashboard: icon('ic-dashboard'),
   parameter: icon('ic-parameter'),
 };
-// const iconify = (name, color, opts = {}) => {
-//   const { width = 22, height = 22, inline = false, ...rest } = opts;
-//   return <Icon icon={name} width={width} height={height} inline={inline} color={color} {...rest} />;
-// };
-
-// // ----------------------------------------------------------------------
-// // 🎨 Colorful Icons (using popular icon packs like mdi, fluent, solar)
-// const ICONS = {
-//   dashboard: iconify('solar:home-smile-bold-duotone', '#4CAF50'),
-//   ecommerce: iconify('fluent:shopping-bag-24-filled', '#2196F3'),
-//   analytics: iconify('mdi:chart-box-multiple', '#9C27B0'),
-//   user: iconify('fluent-mdl2:contact', '#FF9800'),
-//   folder: iconify('mdi:folder-multiple', '#795548'),
-//   project: iconify('solar:rocket-bold-duotone', '#00BCD4'),
-//   lock: iconify('mdi:lock-outline', '#E91E63'),
-//   mail: iconify('mdi:email-outline', '#03A9F4'),
-//   chat: iconify('mdi:chat-processing', '#673AB7'),
-//   calendar: iconify('mdi:calendar-month', '#FF5722'),
-//   course: iconify('mdi:book-open-page-variant', '#009688'),
-//   file: iconify('mdi:file-document', '#607D8B'),
-//   setting: iconify('mdi:cog', '#757575'),
-//   banking: iconify('mdi:bank', '#2E7D32'),
-//   invoice: iconify('mdi:file-document-edit', '#FF7043'),
-//   booking: iconify('mdi:clipboard-check', '#43A047'),
-//   product: iconify('mdi:shopping-outline', '#6A1B9A'),
-//   parameter: iconify('mdi:tune', '#1E88E5'),
-// };
 
 // ----------------------------------------------------------------------
 
@@ -89,8 +62,9 @@ export function useNavData() {
           path: paths.dashboard.home.root,
           icon: ICONS.dashboard,
           children: [
-            { title: 'Hero part', path: paths.dashboard.home.root },
-            { title: 'Hero List', path: paths.dashboard.home.heroList },
+            { title: 'Banner Create', path: paths.dashboard.home.root },
+            { title: 'Banner List', path: paths.dashboard.home.heroList },
+            { title: 'Instruction Create', path: paths.dashboard.home.instruction },
             { title: 'Success part', path: paths.dashboard.home.success },
             { title: 'Membership part', path: paths.dashboard.home.membership },
             { title: 'Service part', path: paths.dashboard.home.services },
@@ -112,6 +86,15 @@ export function useNavData() {
       subheader: 'Management',
       items: [
         {
+          title: 'Projects',
+          path: '/dashboard/projects',
+          icon: ICONS.folder,
+          children: [
+            { title: 'Active', path: '/dashboard/projects/active' },
+            { title: 'Archived', path: '/dashboard/projects/archived' },
+          ],
+        },
+        {
           title: 'Users',
           path: paths.dashboard.group.root,
           icon: ICONS.user,
@@ -121,15 +104,7 @@ export function useNavData() {
             { title: 'User Roles', path: paths.dashboard.group.six },
           ],
         },
-        {
-          title: 'Projects',
-          path: '/dashboard/projects',
-          icon: ICONS.folder,
-          children: [
-            { title: 'Active', path: '/dashboard/projects/active' },
-            { title: 'Archived', path: '/dashboard/projects/archived' },
-          ],
-        },
+
         {
           title: 'Invoices',
           path: '/dashboard/invoices',

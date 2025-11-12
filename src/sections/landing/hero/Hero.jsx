@@ -6,7 +6,9 @@ import useEmblaCarousel from 'embla-carousel-react';
 import { useRouter, usePathname } from 'next/navigation';
 
 import { Box, Button, Typography } from '@mui/material';
+
 import { useEndpoints } from 'src/utils/useEndpoints';
+
 import useApi from 'src/api/api';
 import Loading from 'src/app/loading';
 

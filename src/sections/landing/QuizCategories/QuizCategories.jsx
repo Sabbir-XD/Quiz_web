@@ -2,7 +2,7 @@
 
 import { Icon } from '@iconify/react';
 
-import { Box, Button, Grid, Typography } from '@mui/material';
+import { Box, Grid, Button, Typography } from '@mui/material';
 
 export default function OurQuizServices() {
   const categories = [
