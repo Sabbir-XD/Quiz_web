@@ -1,11 +1,10 @@
 import { CONFIG_STATIC } from 'src/config-global';
-
-import { BlankView } from 'src/sections/blank - Copy/view';
+import quizFrom from 'src/layouts/dashboard/quizzes/quizFrom';
 
 // ----------------------------------------------------------------------
 
 export const metadata = { title: `Quiz Create | Dashboard - ${CONFIG_STATIC.appName}` };
 
 export default function Page() {
-  return <BlankView title="Quiz Create" />;
+  return <quizFrom />;
 }
