@@ -1,10 +1,15 @@
-import { CONFIG_STATIC } from 'src/config-global';
-import quizFrom from 'src/layouts/dashboard/quizzes/quizFrom';
+import { Box, Typography } from '@mui/material';
 
+import { CONFIG_STATIC } from 'src/config-global';
+import QuizFrom from 'src/layouts/dashboard/home/quizzes/quizFrom';
 // ----------------------------------------------------------------------
 
 export const metadata = { title: `Quiz Create | Dashboard - ${CONFIG_STATIC.appName}` };
 
 export default function Page() {
-  return <quizFrom />;
+  return (
+   <Box>
+     <QuizFrom />
+   </Box>
+  );
 }
