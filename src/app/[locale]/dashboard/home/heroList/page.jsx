@@ -1,8 +1,8 @@
 // 'use client';
 
-// import { useRouter } from 'next/navigation';
+import HeroList from 'src/layouts/dashboard/home/heroManager/Herolist';
 
-import HeroList from 'src/layouts/dashboard/home/heroManager/HeroList';
+// import { useRouter } from 'next/navigation';
 
 // ------------------------------------------------------------
 export default function Page() {

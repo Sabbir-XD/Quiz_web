@@ -31,6 +31,7 @@ import LocaleSwitcher from '../LocaleSwitcher/LocaleSwitcher';
 
 export default function AppNavbar({ slice }) {
   const { user } = useAuthContext();
+  console.log('use acche nakii dekha', user);
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);

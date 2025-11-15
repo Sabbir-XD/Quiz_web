@@ -1,23 +1,24 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
+import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { toast } from 'sonner';
+
 import {
   Box,
+  Card,
   Stack,
   Button,
-  Card,
-  CardMedia,
-  Typography,
-  IconButton,
+  Divider,
   Collapse,
-  Divider
+  Typography,
+  IconButton
 } from '@mui/material';
 
 import { useEndpoints } from 'src/utils/useEndpoints';
+
 import useApi from 'src/api/api';
 import Loading from 'src/app/loading';
 import { ConfirmDialog } from 'src/layouts/components/sooner/ConfirmDialog';
@@ -69,15 +70,20 @@ export default function QuizList({ onCreate, onEdit }) {
 
   // Add new quiz
   const handleAddNew = () => {
-    if (onCreate) return onCreate();
-    router.push(`/${locale}/dashboard/quizzes/`);
+    if (onCreate) {
+      return onCreate();
+    }
+    return router.push(`/${locale}/dashboard/quizzes/`);
   };
 
   // Edit quiz
   const handleEdit = (quiz) => {
-    if (onEdit) return onEdit(quiz);
-    router.push(`/${locale}/dashboard/quizzes/edit/${quiz.id}`);
+    if (onEdit) {
+      return onEdit(quiz);
+    }
+    return router.push(`/${locale}/dashboard/quizzes/edit/${quiz.id}`);
   };
+
 
   // Expand/collapse instructions
   const toggleExpand = (quizId) => {

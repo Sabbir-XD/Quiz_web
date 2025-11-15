@@ -18,6 +18,8 @@ import { useRouter, usePathname } from 'src/routes/hooks';
 
 import { useBoolean } from 'src/hooks/use-boolean';
 
+import { useEndpoints } from 'src/utils/useEndpoints';
+
 import { Iconify } from 'src/components/iconify';
 import { Form, Field } from 'src/components/hook-form';
 
@@ -27,19 +29,28 @@ import { FormHead } from '../../components/form-head';
 import { SignUpTerms } from '../../components/sign-up-terms';
 
 // ----------------------------------------------------------------------
-export const   SignUpSchema = zod.object({
-  firstName: zod.string().min(1, { message: 'First name is required!' }),
-  lastName: zod.string().min(1, { message: 'Last name is required!' }),
-  username: zod.string().min(1, { message: 'Username is required!' }),
-  email: zod
-    .string()
-    .min(1, { message: 'Email is required!' })
-    .email({ message: 'Email must be a valid email address!' }),
-  password: zod
-    .string()
-    .min(1, { message: 'Password is required!' })
-    .min(8, { message: 'Password must be at least 8 characters!' }),
-});
+
+export const SignUpSchema = zod
+  .object({
+    firstName: zod.string().min(1, { message: 'First name is required!' }),
+    lastName: zod.string().min(1, { message: 'Last name is required!' }),
+    username: zod.string().min(1, { message: 'Username is required!' }),
+    email: zod
+      .string()
+      .min(1, { message: 'Email is required!' })
+      .email({ message: 'Email must be a valid email address!' }),
+    password: zod
+      .string()
+      .min(1, { message: 'Password is required!' })
+      .min(8, { message: 'Password must be at least 8 characters!' }),
+
+    re_password: zod.string().min(1, { message: 'Confirm password is required!' }),
+  })
+  .refine((data) => data.password === data.re_password, {
+    path: ['re_password'],
+    message: 'Passwords do not match!',
+  });
+
 
 // ----------------------------------------------------------------------
 export function JwtSignUpView() {
@@ -49,6 +60,7 @@ export function JwtSignUpView() {
   const [errorMsg, setErrorMsg] = useState('');
   const pathname = usePathname();
   const slice = pathname.split('/').slice(0, 2).join('/');
+  const endpoints = useEndpoints();
 
   /* const defaultValues = {
     firstName: 'Hello',
@@ -68,15 +80,19 @@ export function JwtSignUpView() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await signUp({
-        email: data.email,
-        password: data.password,
-        username: data.username,
-        firstName: data.firstName,
-        lastName: data.lastName,
-      });
+      await signUp(
+        {
+          email: data.email,
+          password: data.password,
+          re_password: data.re_password,
+          // username: data.username,
+          // firstName: data.firstName,
+          // lastName: data.lastName,
+        },
+        endpoints
+      );
       await checkUserSession?.();
-      router.refresh();
+      router.push(`${slice}/auth/jwt/sign-in/`);
     } catch (error) {
       if (error.response) {
         console.error('ব্যাকএন্ডের রেসপন্স:', error.response.data);
@@ -154,6 +170,24 @@ export function JwtSignUpView() {
               name="password"
               label="Password"
               placeholder="8+ characters"
+              type={password.value ? 'text' : 'password'}
+              InputLabelProps={{ shrink: true }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={password.onToggle} edge="end">
+                      <Iconify icon={password.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              sx={{ '& fieldset': { borderRadius: '12px' } }}
+            />
+
+            <Field.Text
+              name="re_password"
+              label="Confirm Password"
+              placeholder="Re-enter your password"
               type={password.value ? 'text' : 'password'}
               InputLabelProps={{ shrink: true }}
               InputProps={{

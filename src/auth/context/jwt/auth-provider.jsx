@@ -2,15 +2,19 @@
 
 import { useMemo, useEffect, useCallback } from 'react';
 
+import { useEndpoints } from 'src/utils/useEndpoints';
+import { axiosInstance } from 'src/utils/axios-instance';
+
 import { ACCESS_KEY } from './constant';
 import { AuthContext } from '../auth-context';
 import { setSession, isValidToken } from './utils';
 import { useSetState } from '../../../hooks/use-set-state';
-import axiosInstance, { endpoints } from '../../../utils/axios';
+// import axiosInstance, { endpoints } from '../../../utils/axios';
 
 // ----------------------------------------------------------------------
 
 export function AuthProvider({ children }) {
+  const endpoints = useEndpoints();
   const { state, setState } = useSetState({
     user: null,
     loading: true,
@@ -35,7 +39,7 @@ export function AuthProvider({ children }) {
       console.error(error);
       setState({ user: null, loading: false });
     }
-  }, [setState]);
+  }, [setState, endpoints]);
 
   useEffect(() => {
     checkUserSession();

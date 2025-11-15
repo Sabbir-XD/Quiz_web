@@ -1,11 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { useForm, Controller, useFieldArray } from 'react-hook-form';
-import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
+import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
+import { useState, useEffect } from 'react';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { useForm, Controller, useFieldArray } from 'react-hook-form';
+
 import { styled } from '@mui/material/styles';
 import {
   Box,
@@ -18,12 +21,10 @@ import {
   CircularProgress,
 } from '@mui/material';
 
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { useEndpoints } from 'src/utils/useEndpoints';
 
 import useApi from 'src/api/api';
 import Loading from 'src/app/loading';
-import { useEndpoints } from 'src/utils/useEndpoints';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -56,7 +57,7 @@ export default function QuizForm({ editId }) {
 
   const { data: quizData, error, isLoading } = useApi(
     editQuizId ? `${quizUrl.replace(/\/$/, '')}/${editQuizId}` : null,
-    { fetch: !!editQuizId }
+    { fetch: !! editQuizId }
   );
 
   console.log('amr data' ,quizData);
@@ -127,7 +128,8 @@ export default function QuizForm({ editId }) {
           content: inst.content,
         })),
       };
-  console.log("data payload", payload);
+
+      console.log("data payload", payload);
       if (editQuizId) {
         await putData(editQuizId, payload);
         toast.success('Quiz updated successfully!');

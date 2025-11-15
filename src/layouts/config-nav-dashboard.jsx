@@ -63,7 +63,7 @@ export function useNavData() {
           icon: ICONS.dashboard,
           children: [
             { title: 'Banner Create', path: paths.dashboard.home.root },
-            { title: 'Banner List', path: paths.dashboard.home.heroList },
+            { title: 'Banner List', path: paths.dashboard.home.herolist },
             // { title: 'Instruction Create', path: paths.dashboard.home.instruction },
             { title: 'Success part', path: paths.dashboard.home.success },
             { title: 'Membership part', path: paths.dashboard.home.membership },

@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 
 import { CONFIG_STATIC } from 'src/config-global';
 import QuizFrom from 'src/layouts/dashboard/home/quizzes/quizFrom';

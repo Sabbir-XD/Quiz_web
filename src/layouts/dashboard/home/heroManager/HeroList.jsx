@@ -32,6 +32,8 @@ export default function HeroList({ onCreate, onEdit }) {
     fetch: true,
   });
 
+  console.log("list data", banners)
+
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [selectedBanner, setSelectedBanner] = useState(null);
 

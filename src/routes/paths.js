@@ -6,7 +6,6 @@ import { usePathname } from 'next/navigation';
 
 export function usePaths() {
   const pathname = usePathname();
-
   const locale = pathname.split('/')[1] || 'en';
 
   const ROOTS = {
@@ -61,7 +60,7 @@ export function usePaths() {
       },
       home: {
         root: `${ROOTS.DASHBOARD}/home`,
-        heroList: `${ROOTS.DASHBOARD}/home/herolist`,
+        herolist: `${ROOTS.DASHBOARD}/home/herolist`,
         // instruction: `${ROOTS.DASHBOARD}/home/instruction`,
         success: `${ROOTS.DASHBOARD}/home/success`,
         membership: `${ROOTS.DASHBOARD}/home/membership`,

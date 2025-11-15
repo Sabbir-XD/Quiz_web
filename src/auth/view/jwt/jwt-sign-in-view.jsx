@@ -13,6 +13,8 @@ import { useRouter, usePathname } from 'src/routes/hooks';
 
 import { useBoolean } from 'src/hooks/use-boolean';
 
+import { useEndpoints } from 'src/utils/useEndpoints';
+
 import { Iconify } from 'src/components/iconify';
 import { Form, Field } from 'src/components/hook-form';
 
@@ -42,6 +44,8 @@ export function JwtSignInView() {
   const password = useBoolean();
   const pathname = usePathname();
   const slice = pathname.split('/').slice(0, 2).join('/');
+  const endpoints = useEndpoints();
+
 
   const defaultValues = {
     email: 'dev.sabbir@gmail.com',
@@ -64,9 +68,9 @@ export function JwtSignInView() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await signInWithPassword({ email: data.email, password: data.password });
+      await signInWithPassword({ email: data.email, password: data.password }, endpoints);
       await checkUserSession?.();
-      router.refresh();
+      router.push('/');
     } catch (error) {
       console.error(error);
       setErrorMsg(typeof error === 'string' ? error : error.message);

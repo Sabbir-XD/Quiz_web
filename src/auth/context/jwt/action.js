@@ -1,7 +1,7 @@
 'use client';
 
+import { toast } from 'sonner';
 
-import { useEndpoints } from 'src/utils/useEndpoints';
 import { axiosInstance } from 'src/utils/axios-instance';
 
 import { setSession } from './utils';
@@ -9,12 +9,12 @@ import { ACCESS_KEY, REFRESH_KEY } from './constant';
 
 /** **************************************
  * Sign in
+ *
  *************************************** */
-export const signInWithPassword = async ({ email, password }) => {
-  //  const endpoints = useEndpoints();
 
+export const signInWithPassword = async ({ email, password }, endpoints) => {
   try {
-    const res = await axiosInstance.post(useEndpoints.auth.signIn, { email, password });
+    const res = await axiosInstance.post(endpoints.auth.signIn, { email, password });
 
     // Adjust according to backend response (access & refresh)
     const { access, refresh } = res.data;
@@ -30,7 +30,7 @@ export const signInWithPassword = async ({ email, password }) => {
     // Set axios session header
     setSession(access);
 
-    alert('🎉 User logged in successfully!');
+    toast.success('🎉 User logged in successfully!');
   } catch (error) {
     console.error('Error during sign in:', error.response?.data || error);
     throw error.response?.data || error;
@@ -40,21 +40,26 @@ export const signInWithPassword = async ({ email, password }) => {
 /** **************************************
  * Sign up + Auto-login
  *************************************** */
-export const signUp = async ({ email, password, firstName, lastName, username }) => {
+export const signUp = async (
+  { email, password, re_password, firstName, lastName, username },
+  endpoints
+) => {
+  console.log('sinup dekha', endpoints);
   const params = {
     email,
-    username,
+    // username,
     password,
+    re_password,
     // first_name: firstName,
     // last_name: lastName,
   };
 
   try {
-    // 1️⃣ Sign up the user
-    const res = await axiosInstance.post(useEndpoints.auth.signUp, params);
-    console.log('✅ Signup response:', res.data);
+    // Sign up the user
+    const res = await axiosInstance.post(endpoints.auth.signUp, params);
+    console.log(' Signup response:', res.data);
 
-    alert('🎉 User signed up & logged in successfully!');
+    toast.success('🎉 User signed up & logged in successfully!');
     return { success: true, message: 'User created and logged in successfully.' };
   } catch (error) {
     console.error('Error during sign up:', error.response?.data || error);
@@ -71,8 +76,8 @@ export const signOut = async () => {
     setSession(null);
     localStorage.removeItem(ACCESS_KEY);
     localStorage.removeItem(REFRESH_KEY);
-    alert('🔒 User signed out successfully!');
-    window.location.href = '/auth/jwt/sign-in';
+    toast.success('🔒 User signed out successfully!');
+    window.location.href = '/';
   } catch (error) {
     console.error('Error during sign out:', error);
     throw error;

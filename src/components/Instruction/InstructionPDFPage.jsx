@@ -1,7 +1,7 @@
 'use client';
 
-import { useMemo, useState, useEffect, useCallback } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
+import { useState, useEffect, useCallback } from 'react';
 
 import DownloadIcon from '@mui/icons-material/Download';
 import {
@@ -9,17 +9,18 @@ import {
   Card,
   Button,
   Tooltip,
+  useTheme,
   Typography,
   IconButton,
   useMediaQuery,
   CircularProgress,
-  useTheme,
 } from '@mui/material';
 
-import InteractiveButton from '../button/InteractiveButton';
 import { useEndpoints } from 'src/utils/useEndpoints';
+
 import useApi from 'src/api/api';
-import Loading from 'src/app/loading';
+
+import InteractiveButton from '../button/InteractiveButton';
 
 export default function InstructionPDFPage({ onStartQuiz, id }) {
   // All hooks must be declared first

@@ -11,13 +11,11 @@ export function useEndpoints() {
   return {
     banners: `${BASE_URL}/api/banners/`,
     get_quizzes: `${BASE_URL}/api/get_quiz/`,
-    get_quiz_details: (quizId) => `${BASE_URL}/${locale}/api/get_quiz/${quizId}/`,
-    submit_quiz: (quizId) => `${BASE_URL}/${locale}/api/get_quiz/${quizId}/submit/`,
     chat: `${BASE_URL}/${locale}/api/chat`,
     auth: {
-      me: `${BASE_URL}/${locale}/auth/users/me/`,
-      signIn: `${BASE_URL}/${locale}/auth/jwt/create/`,
-      signUp: `${BASE_URL}/${locale}/auth/users/`,
+      me: '/api/auth/users/me/',
+      signIn: '/api/auth/jwt/create/',
+      signUp: '/api/users/',
     },
     mail: {
       list: `${BASE_URL}/${locale}/api/mail/list`,
