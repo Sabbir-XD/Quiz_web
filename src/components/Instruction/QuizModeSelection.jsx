@@ -1,18 +1,18 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter, useParams, usePathname } from 'next/navigation';
 
 import { Box, Card, Stack, Button, useTheme, Typography, useMediaQuery } from '@mui/material';
 
-export default function QuizModeSelection({ onModeSelect }) {
+export default function QuizModeSelection({ id }) {
   const [selectedMode, setSelectedMode] = useState(null);
-  console.log(selectedMode);
   const theme = useTheme();
   const router = useRouter();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const pathname = usePathname();
-
+  const params = useParams();
+  console.log(params.id);
   const modes = [
     {
       id: 'single',

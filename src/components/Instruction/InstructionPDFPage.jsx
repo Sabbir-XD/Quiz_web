@@ -22,13 +22,13 @@ import useApi from 'src/api/api';
 
 import InteractiveButton from '../button/InteractiveButton';
 
-export default function InstructionPDFPage({ onStartQuiz, id }) {
+export default function InstructionPDFPage({ id }) {
+  console.log('instruction', id);
   // All hooks must be declared first
   const [currentPage, setCurrentPage] = useState(1);
   const [isIframeLoading, setIsIframeLoading] = useState(true);
   const [quizPdfInstruction, setQuizPdfInstruction] = useState(null);
   const [currentInstruction, setCurrentInstruction] = useState(null);
-
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const router = useRouter();

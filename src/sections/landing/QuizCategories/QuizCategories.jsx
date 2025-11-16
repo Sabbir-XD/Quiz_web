@@ -11,7 +11,10 @@ import { useEndpoints } from 'src/utils/useEndpoints';
 import useApi from 'src/api/api';
 import Loading from 'src/app/loading';
 
+import { useAuthContext } from 'src/auth/hooks';
+
 export default function OurQuizServices() {
+  const { user } = useAuthContext();
   const router = useRouter();
   const pathname = usePathname();
   const locale = pathname.split('/')[1] || 'en';
@@ -44,10 +47,29 @@ export default function OurQuizServices() {
     { gradient: 'linear-gradient(135deg, #6A1B9A, #AB47BC)', border: '#6A1B9A' },
   ];
 
+//  const handleQuizInstruction = (id) => {
+//    if (user) {
+//      // user logged in → now check subscription
+//      if (user?.subscription) {
+//        router.push(`/${locale}/instructions/${id}`);
+//      } else {
+//        router.push(`/${locale}/pricing/`);
+//      }
+//    } else {
+//      // not logged in → login page
+//      router.push(`/${locale}/auth/jwt/sign-in/`);
+//    }
+  //  };
+  
+
   const handleQuizInstruction = (id) => {
-    console.log('quiz id patah', id);
-    router.push(`/${locale}/instructions/${id}`);
+    if (user) {
+      router.push(`/${locale}/instructions/${id}`);
+    } else {
+      router.push(`/${locale}/auth/jwt/sign-in/`);
+    }
   };
+
 
   if (isLoading) return <Loading />;
 

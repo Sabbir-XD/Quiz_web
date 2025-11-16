@@ -1,5 +1,6 @@
 'use client';
 
+import { useParams } from 'next/navigation';
 import { useState, useEffect, useCallback } from 'react';
 
 import {
@@ -13,183 +14,218 @@ import {
   LinearProgress,
 } from '@mui/material';
 
-import { shuffleArray, ALL_QUESTIONS, TIMER_DURATION, TOTAL_QUESTIONS } from './QuizData';
+import Loading from 'src/app/loading';
 
+import { shuffleArray, useAllQuizzes } from './QuizData';
+
+// Utility: Shuffle questions
 export default function SingleQuizQuestion() {
+  const { id } = useParams();
+  const { quizzes } = useAllQuizzes();
+
+  // BASE STATES (hooks must be static!)
+  const [quiz, setQuiz] = useState(null);
+
   const [questions, setQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+
   const [selectedAnswer, setSelectedAnswer] = useState('');
   const [score, setScore] = useState(0);
-  const [timer, setTimer] = useState(TIMER_DURATION);
+
+  const [timer, setTimer] = useState(0); // PER QUESTION TIMER
   const [showResult, setShowResult] = useState(false);
 
+  const [showExplanation, setShowExplanation] = useState(false);
+
+  // Load quiz
   useEffect(() => {
-    setQuestions(shuffleArray(ALL_QUESTIONS).slice(0, TOTAL_QUESTIONS));
-  }, []);
+    if (!id || !quizzes) return;
+    const foundQuiz = quizzes.find((q) => q.id.toString() === id);
+    setQuiz(foundQuiz);
+  }, [id, quizzes]);
 
-  // useEffect(() => {
-  //   if (timer <= 0) handleNext();
-  //   const interval = setInterval(() => setTimer((t) => t - 1), 1000);
-  //   return () => clearInterval(interval);
-  // }, [timer, currentIndex]);
+  // Initialize quiz
+  useEffect(() => {
+    if (!quiz) return;
 
-  // const handleSelect = (answer) => setSelectedAnswer(answer);
+    const randomized = shuffleArray(quiz.all_questions).slice(0, quiz.total_questions);
 
-  // const handleNext = () => {
-  //   if (selectedAnswer === questions[currentIndex].correctAnswer) setScore((prev) => prev + 1);
-  //   setSelectedAnswer('');
-  //   setTimer(TIMER_DURATION);
+    setQuestions(randomized);
+    setCurrentIndex(0);
+    setSelectedAnswer('');
+    setScore(0);
 
-  //   if (currentIndex + 1 < questions?.length) setCurrentIndex(currentIndex + 1);
-  //   else setShowResult(true);
-  // };
+    setTimer(randomized[0]?.qus_time || 30);
+    setShowResult(false);
+    setShowExplanation(false);
+  }, [quiz]);
 
-  // ✅ Stable function (no re-creation every render)
   const handleNext = useCallback(() => {
-    if (selectedAnswer === questions[currentIndex]?.correctAnswer) {
+    if (!questions.length) return;
+    const currentQ = questions[currentIndex];
+
+    if (selectedAnswer === currentQ.correct_answer) {
       setScore((prev) => prev + 1);
     }
+
     setSelectedAnswer('');
-    setTimer(TIMER_DURATION);
+    setShowExplanation(false);
 
     if (currentIndex + 1 < questions.length) {
       setCurrentIndex((prev) => prev + 1);
+      setTimer(questions[currentIndex + 1].qus_time || 30);
     } else {
       setShowResult(true);
     }
-  }, [selectedAnswer, questions, currentIndex]);
+  }, [selectedAnswer, currentIndex, questions]);
 
-  const handleSelect = (answer) => setSelectedAnswer(answer);
 
-  const handleBack = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex((prev) => prev - 1);
-      setSelectedAnswer('');
-      setTimer(TIMER_DURATION);
+  // TIMER (per question)
+  useEffect(() => {
+    if (!questions.length || showResult) return;
+
+    const interval = setInterval(() => {
+      setTimer((t) => {
+        if (t <= 1) {
+          handleNext();
+          const nextTime = questions[currentIndex + 1]?.qus_time;
+          return typeof nextTime === 'number' ? nextTime : 30;
+        }
+        return t - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [questions.length, showResult, handleNext, currentIndex]);
+
+  const handleSelect = (answer) => {
+    setSelectedAnswer(answer);
+    if (quiz.instant_feedback) {
+      setShowExplanation(true);
     }
   };
 
-  // Timer logic (safe)
-  useEffect(() => {
-    if (timer <= 0) handleNext();
+  const handleBack = () => {
+    if (currentIndex === 0) return;
 
-    const interval = setInterval(() => setTimer((t) => t - 1), 1000);
-    return () => clearInterval(interval);
-  }, [timer, currentIndex, handleNext]);
+    setCurrentIndex((prev) => prev - 1);
+    setSelectedAnswer('');
+    setShowExplanation(false);
+    setTimer(questions[currentIndex - 1].qus_time || 30);
+  };
 
-  if (!questions.length) return null;
+  if (!quiz || !questions.length) {
+    return (
+      <Box
+        sx={{
+          minHeight: '40vh',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Loading />
+      </Box>
+    );
+  }
+
+  const currentQ = questions[currentIndex];
 
   return (
     <Box
       sx={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: 'linear-gradient(135deg, #00A76F 0%, #118D57 100%)',
+        minHeight: '50vh',
         px: 2,
         py: 6,
+        display: 'flex',
+        justifyContent: 'center',
+        background: 'linear-gradient(135deg, #E9FDEB 0%, #D2FCD7 100%)',
       }}
     >
-      <Container
-        maxWidth="md"
-        sx={{
-          width: { xs: '100%', sm: '90%', md: '75%' },
-          bgcolor: 'white',
-          p: 4,
-          borderRadius: 3,
-          boxShadow: '0 10px 30px rgba(0,0,0,0.15)',
-        }}
-      >
+      <Container maxWidth="md">
         {!showResult ? (
           <>
-            {/* Top Controls */}
-            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2}>
+            {/* HEADER */}
+            <Stack direction="row" justifyContent="space-between" alignItems="center" mb={3}>
               <Button
                 variant="outlined"
-                size="small"
-                sx={{
-                  color: '#118D57',
-                  borderColor: '#118D57',
-                  '&:hover': { borderColor: '#00A76F', bgcolor: '#e8f5ee' },
-                }}
                 onClick={handleBack}
                 disabled={currentIndex === 0}
+                sx={{
+                  borderColor: '#3EAF6F',
+                  color: '#2F8F58',
+                  '&:hover': { borderColor: '#2F8F58', background: '#E6F9EC' },
+                }}
               >
                 Back
               </Button>
-              <Typography variant="body1" sx={{ fontWeight: 600 }}>
-                Time Left: {timer}s
+
+              <Typography fontWeight={700} color="#2F8F58">
+                {quiz.title}
+              </Typography>
+
+              <Typography fontWeight={700} color="#2F8F58">
+                ⏳ {timer}s
               </Typography>
             </Stack>
 
-            {/* Progress */}
+            {/* TIMER BAR */}
             <LinearProgress
               variant="determinate"
-              value={(timer / TIMER_DURATION) * 100}
+              value={currentQ?.qus_time ? (timer / currentQ.qus_time) * 100 : 0}
               sx={{
                 mb: 3,
-                height: 8,
-                borderRadius: 4,
-                bgcolor: '#e0e0e0',
-                '& .MuiLinearProgress-bar': { bgcolor: '#00A76F' },
+                height: 10,
+                borderRadius: 5,
+                '& .MuiLinearProgress-bar': {
+                  backgroundColor: '#34C759',
+                },
               }}
             />
 
-            {/* Question */}
-            <Typography variant="h6" mb={3} sx={{ fontWeight: 700, color: '#118D57' }}>
-              Question {currentIndex + 1} of {questions.length}
+            <Typography variant="h6" fontWeight={700} color="#0A4621" mb={2}>
+              Question {currentIndex + 1} / {questions.length}
             </Typography>
 
+            {/* CARD */}
             <Card
               sx={{
+                p: 2,
                 borderRadius: 3,
-                boxShadow: '0 6px 20px rgba(0,0,0,0.1)',
-                transition: '0.3s',
-                '&:hover': { boxShadow: '0 8px 25px rgba(0,0,0,0.15)' },
+                boxShadow: '0px 4px 20px rgba(0, 128, 0, 0.15)',
+                background: '#FFFFFF',
               }}
             >
               <CardContent>
-                <Typography variant="subtitle1" mb={2} sx={{ fontWeight: 600, color: '#333' }}>
-                  {questions[currentIndex].question}
+                <Typography fontWeight={700} mb={3} color="#145A32">
+                  {currentQ.question}
                 </Typography>
 
+                {/* OPTIONS */}
                 <Stack spacing={2}>
-                  {questions[currentIndex].options.map((option) => {
+                  {currentQ.options.map((option) => {
                     const isSelected = selectedAnswer === option;
-                    const correct = questions[currentIndex].correctAnswer === option;
-                    const showCorrect = selectedAnswer && (isSelected || correct);
 
                     return (
                       <Button
                         key={option}
                         variant={isSelected ? 'contained' : 'outlined'}
-                        disabled={!!selectedAnswer && !isSelected}
+                        disabled={
+                          quiz.instant_feedback
+                            ? selectedAnswer && selectedAnswer !== option
+                            : false
+                        }
                         onClick={() => handleSelect(option)}
                         sx={{
                           justifyContent: 'flex-start',
-                          borderColor: showCorrect ? (correct ? '#118D57' : '#D32F2F') : 'grey.400',
-                          bgcolor: showCorrect
-                            ? correct
-                              ? '#e0f4ea'
-                              : '#fdecea'
-                            : isSelected
-                              ? '#118D57'
-                              : 'white',
-                          color: showCorrect
-                            ? correct
-                              ? '#118D57'
-                              : '#D32F2F'
-                            : isSelected
-                              ? 'white'
-                              : 'black',
-                          '&:hover': {
-                            bgcolor: isSelected ? '#0C8B4D' : '#f4f4f4',
-                          },
                           textTransform: 'none',
                           borderRadius: 2,
-                          fontSize: '0.95rem',
-                          py: 1.3,
+                          borderColor: '#3EAF6F',
+                          color: isSelected ? '#FFFFFF' : '#2F8F58',
+                          background: isSelected ? '#34C759' : '',
+                          '&:hover': {
+                            background: isSelected ? '#2FB150' : '#E7F9ED',
+                          },
                         }}
                       >
                         {option}
@@ -198,45 +234,114 @@ export default function SingleQuizQuestion() {
                   })}
                 </Stack>
 
-                {selectedAnswer && (
+                {/* NO instant feedback → NEXT button */}
+                {!quiz.instant_feedback && selectedAnswer && (
                   <Button
-                    variant="contained"
                     fullWidth
+                    variant="contained"
                     sx={{
                       mt: 3,
-                      bgcolor: '#118D57',
-                      '&:hover': { bgcolor: '#0C8B4D' },
-                      borderRadius: 2,
-                      py: 1.2,
-                      fontWeight: 600,
+                      bgcolor: '#34C759',
+                      '&:hover': { bgcolor: '#2FB150' },
                     }}
                     onClick={handleNext}
                   >
                     {currentIndex + 1 === questions.length ? 'Finish' : 'Next'}
                   </Button>
                 )}
+
+                {/* instant feedback view */}
+                {quiz.instant_feedback && showExplanation && (
+                  <Box
+                    mt={3}
+                    p={2}
+                    sx={{
+                      bgcolor: '#EAFDF1',
+                      borderRadius: 2,
+                      border: '1px solid #34C759',
+                    }}
+                  >
+                    <Typography fontWeight={700} color="#145A32">
+                      Explanation:
+                    </Typography>
+
+                    <Typography mt={1} color="#1B5E20">
+                      {currentQ.explain}
+                    </Typography>
+
+                    <Button
+                      fullWidth
+                      variant="contained"
+                      sx={{
+                        mt: 2,
+                        bgcolor: '#34C759',
+                        '&:hover': { bgcolor: '#2FB150' },
+                      }}
+                      onClick={handleNext}
+                    >
+                      Continue
+                    </Button>
+                  </Box>
+                )}
               </CardContent>
             </Card>
           </>
         ) : (
-          <Box textAlign="center" sx={{ mt: 6 }}>
-            <Typography variant="h4" mb={2} sx={{ color: '#118D57', fontWeight: 700 }}>
+          /* RESULT SCREEN */
+          <Box textAlign="center">
+            <Typography variant="h4" mb={2} color="#065F33">
               🎉 Quiz Complete!
             </Typography>
-            <Typography variant="h5" sx={{ color: '#333' }}>
-              Your Score: {score} / {questions.length}
+
+            <Typography variant="h5" color="#0B7438">
+              Score: {score} / {questions.length}
             </Typography>
+
+            {/* Show all explanations when instant_feedback = false */}
+            {!quiz.instant_feedback && (
+              <Box mt={4} p={3} sx={{ bgcolor: '#EAFDF1', borderRadius: 3 }}>
+                <Typography variant="h6" mb={2} color="#145A32">
+                  📘 Full Explanation Summary
+                </Typography>
+
+                {questions.map((q) => (
+                  <Box
+                    key={q.id}
+                    mb={2}
+                    p={2}
+                    sx={{
+                      borderBottom: '1px solid #C7EBD1',
+                    }}
+                  >
+                    <Typography fontWeight={700}>{q.question}</Typography>
+                    <Typography color="#2F8F58" mt={1}>
+                      ✔ Correct: {q.correct_answer}
+                    </Typography>
+                    <Typography mt={1}>{q.explain}</Typography>
+                  </Box>
+                ))}
+              </Box>
+            )}
+
             <Button
               variant="contained"
               sx={{
                 mt: 3,
-                bgcolor: '#118D57',
-                '&:hover': { bgcolor: '#0C8B4D' },
-                borderRadius: 2,
+                bgcolor: '#34C759',
+                '&:hover': { bgcolor: '#2FB150' },
               }}
-              onClick={() => window.location.reload()}
+              onClick={() => {
+                const shuffled = shuffleArray(quiz.all_questions).slice(0, quiz.total_questions);
+
+                setQuestions(shuffled);
+                setCurrentIndex(0);
+                setSelectedAnswer('');
+                setScore(0);
+                setShowResult(false);
+                setTimer(shuffled[0]?.qus_time || 30);
+              }}
             >
-              Try Again
+              🔄 Try Again
             </Button>
           </Box>
         )}

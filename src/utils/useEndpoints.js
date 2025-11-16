@@ -11,6 +11,7 @@ export function useEndpoints() {
   return {
     banners: `${BASE_URL}/api/banners/`,
     get_quizzes: `${BASE_URL}/api/get_quiz/`,
+    qus_quizzes:`${BASE_URL}/api/quizzes/`,
     chat: `${BASE_URL}/${locale}/api/chat`,
     auth: {
       me: '/api/auth/users/me/',
