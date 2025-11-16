@@ -92,6 +92,7 @@ export function useNavData() {
           children: [
             { title: 'Quiz Create ', path: paths.dashboard.quizzes.root },
             { title: 'Quiz List', path: paths.dashboard.quizzes.quizlist },
+            { title: 'Qus Create', path: paths.dashboard.quizzes.questions },
             { title: 'User Roles', path: paths.dashboard.quizzes.six },
           ],
         },

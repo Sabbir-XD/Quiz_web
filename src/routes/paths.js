@@ -56,6 +56,7 @@ export function usePaths() {
       quizzes: {
         root: `${ROOTS.DASHBOARD}/quizzes`,
         quizlist: `${ROOTS.DASHBOARD}/quizzes/quizlist`,
+        questions: `${ROOTS.DASHBOARD}/quizzes/questions`,
         six: `${ROOTS.DASHBOARD}/quizzes/six`,
       },
       home: {
